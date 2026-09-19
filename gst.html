@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – GST Calculator+</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,.4);
+        }
+
+        select,input{
+            width:100%;
+            padding:12px;
+            margin:6px 0;
+            border:none;
+            border-radius:10px;
+            font-size:1rem;
+            text-align:center;
+            background:rgba(255,255,255,.2);
+            color:white;
+            outline:none;
+        }
+
+        select option{
+            background:#203a43;
+            color:white;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:8px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            background:rgba(255,255,255,.2);
+            color:white;
+            font-weight:bold;
+        }
+
+        button:hover{
+            background:#00ffd5;
+            color:black;
+        }
+
+        .result{
+            margin-top:18px;
+            padding:16px;
+            border-radius:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(0,255,213,.3);
+            text-align:left;
+        }
+
+        .result p{
+            display:flex;
+            justify-content:space-between;
+            margin:8px 0;
+            color:white;
+        }
+
+        .total{
+            color:#00ffd5;
+            font-size:1.2rem;
+            font-weight:bold;
+            border-top:1px solid rgba(255,255,255,.2);
+            padding-top:10px;
+            margin-top:10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">NumeriXa</h1>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+<div class="calculator">
+
+<h2>GST Calculator+</h2>
+
+<select id="mode" onchange="calculateGST()">
+    <option value="add">Add GST</option>
+    <option value="remove">Remove GST</option>
+</select>
+
+<input type="number" id="amount" placeholder="Enter Amount" oninput="calculateGST()">
+
+<select id="rate" onchange="calculateGST()">
+    <option value="3">3%</option>
+    <option value="5">5%</option>
+    <option value="12">12%</option>
+    <option value="18" selected>18%</option>
+    <option value="28">28%</option>
+</select>
+
+<button onclick="resetGST()">Reset</button>
+
+<div class="result" id="result">
+
+    <p><span>Amount</span><span>₹0.00</span></p>
+    <p><span>GST</span><span>₹0.00</span></p>
+    <p><span>CGST</span><span>₹0.00</span></p>
+    <p><span>SGST</span><span>₹0.00</span></p>
+    <p class="total"><span>Total</span><span>₹0.00</span></p>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function format(v){
+    return Number(v).toLocaleString("en-IN",{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    });
+}
+
+function calculateGST(){
+
+    const amount=parseFloat(document.getElementById("amount").value);
+
+    if(isNaN(amount)){
+        resetResult();
+        return;
+    }
+
+    const rate=parseFloat(document.getElementById("rate").value);
+    const mode=document.getElementById("mode").value;
+
+    let base,gst,total;
+
+    if(mode==="add"){
+        base=amount;
+        gst=base*rate/100;
+        total=base+gst;
+    }else{
+        total=amount;
+        base=total/(1+rate/100);
+        gst=total-base;
+    }
+
+    const cgst=gst/2;
+    const sgst=gst/2;
+
+    document.getElementById("result").innerHTML=`
+        <p><span>${mode==="add"?"Original Amount":"Amount Before GST"}</span><span>₹${format(base)}</span></p>
+        <p><span>GST (${rate}%)</span><span>₹${format(gst)}</span></p>
+        <p><span>CGST (${rate/2}%)</span><span>₹${format(cgst)}</span></p>
+        <p><span>SGST (${rate/2}%)</span><span>₹${format(sgst)}</span></p>
+        <p class="total"><span>${mode==="add"?"Final Amount":"Amount Paid"}</span><span>₹${format(total)}</span></p>
+    `;
+}
+
+function resetResult(){
+
+    document.getElementById("result").innerHTML=`
+        <p><span>Amount</span><span>₹0.00</span></p>
+        <p><span>GST</span><span>₹0.00</span></p>
+        <p><span>CGST</span><span>₹0.00</span></p>
+        <p><span>SGST</span><span>₹0.00</span></p>
+        <p class="total"><span>Total</span><span>₹0.00</span></p>
+    `;
+}
+
+function resetGST(){
+
+    document.getElementById("mode").selectedIndex=0;
+    document.getElementById("rate").value="18";
+    document.getElementById("amount").value="";
+    resetResult();
+}
+
+</script>
+
+</body>
+</html>

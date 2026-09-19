@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Attendance Calculator</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255,255,255,.2);
+            color: white;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: rgba(255,255,255,.7);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(0,255,213,.3);
+            text-align: left;
+        }
+
+        .result p {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            color: white;
+        }
+
+        .total {
+            color: #00ffd5;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-top: 1px solid rgba(255,255,255,.2);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="calculator">
+
+        <h2>Attendance Calculator</h2>
+
+        <input type="number" id="attended" placeholder="Classes Attended" oninput="calculateAttendance()">
+
+        <input type="number" id="total" placeholder="Total Classes" oninput="calculateAttendance()">
+
+        <button onclick="resetAttendance()">Reset</button>
+
+        <div class="result" id="result">
+
+            <p><span>Attendance</span><span>0%</span></p>
+            <p><span>Classes Attended</span><span>0</span></p>
+            <p><span>Total Classes</span><span>0</span></p>
+            <p class="total"><span>Status</span><span>—</span></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function calculateAttendance(){
+
+    const attended=parseFloat(document.getElementById("attended").value);
+    const total=parseFloat(document.getElementById("total").value);
+
+    if(isNaN(attended)||isNaN(total)||total<=0){
+        resetResult();
+        return;
+    }
+
+    const percent=(attended/total)*100;
+
+    let status="Good";
+    let color="#00ffd5";
+
+    if(percent<75){
+        status="Below 75%";
+        color="#ff6b6b";
+    }else if(percent<85){
+        status="Needs Improvement";
+        color="#ffd166";
+    }
+
+    document.getElementById("result").innerHTML=`
+        <p><span>Attendance</span><span>${percent.toFixed(2)}%</span></p>
+        <p><span>Classes Attended</span><span>${attended}</span></p>
+        <p><span>Total Classes</span><span>${total}</span></p>
+        <p class="total"><span>Status</span><span style="color:${color};">${status}</span></p>
+    `;
+}
+
+function resetResult(){
+
+    document.getElementById("result").innerHTML=`
+        <p><span>Attendance</span><span>0%</span></p>
+        <p><span>Classes Attended</span><span>0</span></p>
+        <p><span>Total Classes</span><span>0</span></p>
+        <p class="total"><span>Status</span><span>—</span></p>
+    `;
+}
+
+function resetAttendance(){
+
+    document.getElementById("attended").value="";
+    document.getElementById("total").value="";
+    resetResult();
+
+}
+
+</script>
+
+</body>
+</html>

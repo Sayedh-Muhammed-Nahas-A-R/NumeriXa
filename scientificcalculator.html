@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+    <link rel="stylesheet" href="calc.css">
+
+    <meta charset="UTF-8">
+    <title>Scientific Calculator</title>
+
+    <style>
+        .angle-note {
+            text-align: center;
+            font-size: 1.0rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .top-keys {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .top-keys button,
+        .buttons button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+
+        .buttons button:hover,
+        .top-keys button:hover {
+            background: #00ffd5;
+            color: #000;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <header>
+            <h1 class="dashboard-heading">NumeriXa</h1>
+        </header>
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+
+        <section class="calculator">
+            <h2>Scientific Calculator</h2>
+
+            <input class="display" id="sciDisplay" value="0" readonly>
+            <p class="angle-note">Angles in degrees</p>
+
+            <div class="top-keys">
+                <button onclick="clearDisplay()">AC</button>
+                <button onclick="backspace()">DEL</button>
+            </div>
+
+            <div class="buttons">
+                <!-- Powers -->
+                <button onclick="press('**3')">x³</button>
+                <button onclick="press('**2')">x²</button>
+                <button onclick="press('**')">xʸ</button>
+
+                <!-- Log / Root / Constants -->
+                <button onclick="press('Math.log10(')">log</button>
+                <button onclick="press('Math.sqrt(')">√</button>
+                <button onclick="press('Math.PI')">π</button>
+                <button onclick="press('fact(')">x!</button>
+                <button onclick="press('/')">÷</button>
+
+                <!-- Trigonometry -->
+                <button onclick="press('sin(')">sin</button>
+                <button onclick="press('cos(')">cos</button>
+                <button onclick="press('tan(')">tan</button>
+
+
+
+                <button onclick="press('*')">×</button>
+
+                <!-- Numbers -->
+                <button onclick="press('7')">7</button>
+                <button onclick="press('8')">8</button>
+                <button onclick="press('9')">9</button>
+                <button onclick="press('-')">−</button>
+
+                <button onclick="press('4')">4</button>
+                <button onclick="press('5')">5</button>
+                <button onclick="press('6')">6</button>
+                <button onclick="press('+')">+</button>
+
+                <button onclick="press('1')">1</button>
+                <button onclick="press('2')">2</button>
+                <button onclick="press('3')">3</button>
+                <button onclick="press('(')">(</button>
+
+                <button onclick="press('0')">0</button>
+                <button onclick="press('.')">.</button>
+                <button onclick="press(')')">)</button>
+                <button onclick="calculate()">=</button>
+            </div>
+
+
+            <script>
+                let justCalculated = false;
+
+                function roundResult(num) {
+                    return Math.round(num * 1e12) / 1e12;
+                }
+
+                // ===== DISPLAY =====
+
+
+                function press(val) {
+
+                    const operators = ["+", "-", "*", "/", "**"];
+
+                    // Reset after calculation
+                    if (justCalculated && !operators.includes(val)) {
+                        sciDisplay.value = "";
+                    }
+
+                    justCalculated = false;
+
+                    let lastTwo = sciDisplay.value.slice(-2);
+                    let lastChar = sciDisplay.value.slice(-1);
+                    // Prevent double operators
+                    if (operators.includes(val)) {
+
+                        if (operators.includes(lastTwo)) {
+                            sciDisplay.value =
+                                sciDisplay.value.slice(0, -2) + val;
+                            return;
+                        }
+
+                        if (operators.includes(lastChar)) {
+                            sciDisplay.value =
+                                sciDisplay.value.slice(0, -1) + val;
+                            return;
+                        }
+                    }
+
+                    if (sciDisplay.value === "0" && val !== ".") {
+                        sciDisplay.value = val;
+                    } else {
+                        sciDisplay.value += val;
+                    }
+                }
+                function clearDisplay() {
+                    sciDisplay.value = "0";
+                    justCalculated = false;
+                }
+
+                function backspace() {
+                    if (sciDisplay.value === "Error" || sciDisplay.value === "Infinity") {
+                        sciDisplay.value = "0";
+                        return;
+                    }
+
+                    sciDisplay.value =
+                        sciDisplay.value.length <= 1 ? "0" : sciDisplay.value.slice(0, -1);
+                }
+
+                // ===== DEGREE TRIG =====
+                function sin(x) {
+                    return Math.sin(x * Math.PI / 180);
+                }
+
+                function cos(x) {
+                    return Math.cos(x * Math.PI / 180);
+                }
+
+                function tan(x) {
+                    let cosValue = Math.cos(x * Math.PI / 180);
+
+                    // If cosine is extremely close to zero
+                    if (Math.abs(cosValue) < 1e-10) {
+                        return Infinity;
+                    }
+
+                    return Math.sin(x * Math.PI / 180) / cosValue;
+                }
+
+                // ===== FACTORIAL =====
+                function fact(n) {
+                    if (!Number.isInteger(n) || n < 0) return NaN;
+                    if (n === 0 || n === 1) return 1;
+                    let r = 1;
+                    for (let i = 2; i <= n; i++) r *= i;
+                    return r;
+                }
+
+                // ===== CALCULATE =====
+                function calculate() {
+                    try {
+
+                        let expression = sciDisplay.value;
+
+                        // Auto-close parentheses
+                        let open = (expression.match(/\(/g) || []).length;
+                        let close = (expression.match(/\)/g) || []).length;
+                        while (close < open) {
+                            expression += ")";
+                            close++;
+                        }
+
+                        let result = eval(expression);
+                        if (result === Infinity || result === -Infinity) {
+                            sciDisplay.value = "Infinity";
+                        }
+                        else if (isNaN(result)) {
+                            sciDisplay.value = "Error";
+                        }
+                        else {
+                            sciDisplay.value = roundResult(result);
+                        }
+
+                        justCalculated = true;
+
+                    } catch {
+                        sciDisplay.value = "Error";
+                        justCalculated = true;
+                    }
+                }
+
+
+
+                // ===== KEYBOARD =====
+                document.addEventListener("keydown", e => {
+
+                    if (!isNaN(e.key) || e.key === ".") press(e.key);
+                    else if (e.key === "^") press("**");
+                    else if ("+-*/()".includes(e.key)) press(e.key);
+                    else if (e.key === "Enter") calculate();
+                    else if (e.key === "Backspace") backspace();
+                    else if (e.key === "Escape") clearDisplay();
+
+                });
+
+
+            </script>
+    </div>
+</body>
+
+</html>

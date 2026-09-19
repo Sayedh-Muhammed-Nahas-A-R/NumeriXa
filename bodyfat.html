@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Body Fat Calculator</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,.4);
+        }
+
+        input,select{
+            width:100%;
+            padding:12px;
+            margin:6px 0;
+            border:none;
+            border-radius:10px;
+            font-size:1rem;
+            text-align:center;
+            background:rgba(255,255,255,.2);
+            color:white;
+            outline:none;
+        }
+
+        input::placeholder{
+            color:rgba(255,255,255,.7);
+        }
+
+        select option{
+            background:#203a43;
+            color:white;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:8px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            background:rgba(255,255,255,.2);
+            color:white;
+            font-weight:bold;
+        }
+
+        button:hover{
+            background:#00ffd5;
+            color:black;
+        }
+
+        .result{
+            margin-top:18px;
+            padding:16px;
+            border-radius:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(0,255,213,.3);
+            text-align:left;
+        }
+
+        .result p{
+            display:flex;
+            justify-content:space-between;
+            margin:8px 0;
+            color:white;
+        }
+
+        .total{
+            color:#00ffd5;
+            font-size:1.2rem;
+            font-weight:bold;
+            border-top:1px solid rgba(255,255,255,.2);
+            padding-top:10px;
+            margin-top:10px;
+        }
+
+        #hipField{
+            display:none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">NumeriXa</h1>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+<div class="calculator">
+
+<h2>Body Fat Calculator</h2>
+
+<select id="gender" onchange="toggleHip();calculateBodyFat();">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+</select>
+
+<input type="number" id="height" placeholder="Height (cm)" oninput="calculateBodyFat()">
+
+<input type="number" id="neck" placeholder="Neck (cm)" oninput="calculateBodyFat()">
+
+<input type="number" id="waist" placeholder="Waist (cm)" oninput="calculateBodyFat()">
+
+<input type="number" id="hip" placeholder="Hip (cm)" oninput="calculateBodyFat()" style="display:none;">
+
+<button onclick="resetBodyFat()">Reset</button>
+
+<div class="result" id="result">
+    <p><span>Body Fat</span><span>0%</span></p>
+    <p><span>Category</span><span>—</span></p>
+    <p class="total"><span>Health</span><span>—</span></p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function toggleHip(){
+    const female=document.getElementById("gender").value==="female";
+    document.getElementById("hip").style.display=female?"block":"none";
+}
+
+function calculateBodyFat(){
+
+    const gender=document.getElementById("gender").value;
+    const height=parseFloat(document.getElementById("height").value);
+    const neck=parseFloat(document.getElementById("neck").value);
+    const waist=parseFloat(document.getElementById("waist").value);
+    const hip=parseFloat(document.getElementById("hip").value);
+
+    if(isNaN(height)||isNaN(neck)||isNaN(waist)||(gender==="female"&&isNaN(hip))){
+        resetResult();
+        return;
+    }
+
+    let fat;
+
+    if(gender==="male"){
+        fat=495/(1.0324-0.19077*Math.log10(waist-neck)+0.15456*Math.log10(height))-450;
+    }else{
+        fat=495/(1.29579-0.35004*Math.log10(waist+hip-neck)+0.221*Math.log10(height))-450;
+    }
+
+    fat=Math.max(0,fat);
+
+    let category,health;
+
+    if(gender==="male"){
+        if(fat<6){category="Essential";health="Very Low";}
+        else if(fat<14){category="Athlete";health="Excellent";}
+        else if(fat<18){category="Fitness";health="Good";}
+        else if(fat<25){category="Average";health="Normal";}
+        else{category="Obese";health="High";}
+    }else{
+        if(fat<14){category="Essential";health="Very Low";}
+        else if(fat<21){category="Athlete";health="Excellent";}
+        else if(fat<25){category="Fitness";health="Good";}
+        else if(fat<32){category="Average";health="Normal";}
+        else{category="Obese";health="High";}
+    }
+
+    document.getElementById("result").innerHTML=`
+        <p><span>Body Fat</span><span>${fat.toFixed(1)}%</span></p>
+        <p><span>Category</span><span>${category}</span></p>
+        <p class="total"><span>Health</span><span>${health}</span></p>
+    `;
+}
+
+function resetResult(){
+    document.getElementById("result").innerHTML=`
+        <p><span>Body Fat</span><span>0%</span></p>
+        <p><span>Category</span><span>—</span></p>
+        <p class="total"><span>Health</span><span>—</span></p>
+    `;
+}
+
+function resetBodyFat(){
+    document.getElementById("gender").selectedIndex=0;
+    document.getElementById("height").value="";
+    document.getElementById("neck").value="";
+    document.getElementById("waist").value="";
+    document.getElementById("hip").value="";
+    toggleHip();
+    resetResult();
+}
+
+toggleHip();
+
+</script>
+
+</body>
+</html>

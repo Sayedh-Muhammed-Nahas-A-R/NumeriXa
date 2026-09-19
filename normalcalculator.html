@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <link rel="stylesheet" href="all.css">
+             <link rel="stylesheet" href="body.css">
+             <link rel="stylesheet" href="calc.css">
+
+
+    <title>NumeriXa – Normal</title>
+    <style>
+       
+    
+
+        
+
+        .big-plus {
+            grid-row: span 2;
+            font-size: 1.6rem;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <header>
+            <h1 class="dashboard-heading">NumeriXa</h1>
+        </header>
+        <a href="dashboard.html" class="back-btn">
+        Back to Dashboard
+        </a>
+
+
+        <div class="calculator">
+            <h2>Normal Calculator</h2>
+            <input class="display" id="display" value="0" readonly />
+
+            <div class="buttons">
+                <button onclick="clearDisplay()">AC</button>
+                <button onclick="backspace()">DEL</button>
+                <button onclick="press('%')">%</button>
+                <button onclick="press('/')">÷</button>
+
+                <button onclick="press('7')">7</button>
+                <button onclick="press('8')">8</button>
+                <button onclick="press('9')">9</button>
+                <button onclick="press('*')">×</button>
+
+                <button onclick="press('4')">4</button>
+                <button onclick="press('5')">5</button>
+                <button onclick="press('6')">6</button>
+                <button onclick="press('-')">−</button>
+
+                <button onclick="press('1')">1</button>
+                <button onclick="press('2')">2</button>
+                <button onclick="press('3')">3</button>
+                <button class="big-plus" onclick="press('+')">+</button>
+
+                <button onclick="press('0')">0</button>
+                <button onclick="press('.')">.</button>
+                <button onclick="calculate()">=</button>
+            </div>
+        </div>
+
+        <script>
+            const display = document.getElementById("display");
+
+            function press(val) {
+                if (display.value === "Error") display.value = "0";
+                display.value = display.value === "0" ? val : display.value + val;
+            }
+
+            function calculate() {
+                try {
+                    display.value = eval(display.value);
+                    if (display.value === "Infinity" || display.value === "NaN") {
+                        display.value = "Error";
+                    }
+                } catch {
+                    display.value = "Error";
+                }
+            }
+
+            function clearDisplay() {
+                display.value = "0";
+            }
+
+            function backspace() {
+                if (display.value === "Error") {
+                    display.value = "0";
+                    return;
+                }
+                display.value = display.value.length > 1
+                    ? display.value.slice(0, -1)
+                    : "0";
+            }
+
+            document.addEventListener("keydown", (e) => {
+                if (!isNaN(e.key) || e.key === ".") press(e.key);
+                else if (["+", "-", "*", "/", "%"].includes(e.key)) press(e.key);
+                else if (e.key === "Enter") calculate();
+                else if (e.key === "Backspace") backspace();
+                else if (e.key === "Escape") clearDisplay();
+            });
+        </script>
+    </div>
+</body>
+
+</html>

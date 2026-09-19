@@ -1,0 +1,234 @@
+<html>
+
+<head>
+  <title>NumeriXa – BMI Calculator</title>
+<link rel="stylesheet" href="all.css">
+     <link rel="stylesheet" href="body.css">
+
+ <style>
+ 
+
+
+  /* Match finance.html glass card */
+  .calculator {
+    max-width: 360px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  h2 {
+    margin-bottom: 15px;
+  }
+
+ input, select {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+
+  appearance: none; /* removes default white style */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Dropdown options dark theme */
+select option {
+  background: #203a43;
+  color: #fff;
+}
+
+  input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  input:focus, select:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px #00ffd5;
+  }
+
+  /* Match gradient button from finance */
+  button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    color: #000;
+    transition: 0.3s ease;
+  }
+
+  button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 12px rgba(0, 255, 213, 0.6);
+  }
+
+  .result {
+    margin-top: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  #advice {
+    margin-top: 6px;
+    font-size: 0.95rem;
+  }
+
+  /* Gauge meter (unchanged colors for BMI meaning) */
+  .gauge {
+    width: 100%;
+    height: 18px;
+    border-radius: 10px;
+    background: linear-gradient(
+      to right,
+      #4fc3f7 0%,
+      #00e676 25%,
+      #ffca28 50%,
+      #ff5252 75%
+    );
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .gauge-fill {
+    height: 100%;
+    width: 0%;
+    background: rgba(0,0,0,0.6);
+    transition: width 0.6s ease;
+  }
+
+  #idealWeight {
+    margin-top: 10px;
+    font-size: 0.95rem;
+  }
+
+
+</style>
+
+</head>
+
+<body>
+
+<div>
+  <header>
+    <h1 class="dashboard-heading">NumeriXa</h1>
+  </header>
+
+  <a href="dashboard.html" class="back-btn">
+    Back to Dashboard
+  </a>
+
+  <div class="calculator">
+    <h2>BMI Calculator</h2>
+
+    <input type="number" id="weight" placeholder="Weight (kg)">
+
+    <select id="unit">
+      <option value="m">Height in meters</option>
+      <option value="cm">Height in centimeters</option>
+    </select>
+
+    <input type="number" id="height" placeholder="Enter height">
+
+    <button onclick="calculateBMI()">Calculate BMI</button>
+    <button onclick="resetBMI()">Reset</button>
+
+    <div class="result" id="result"></div>
+    <div id="advice"></div>
+
+    <div class="gauge">
+      <div class="gauge-fill" id="gaugeFill"></div>
+    </div>
+
+    <div id="idealWeight"></div>
+  </div>
+</div>
+
+<script>
+function calculateBMI() {
+  const weight = parseFloat(document.getElementById("weight").value);
+  let height = parseFloat(document.getElementById("height").value);
+  const unit = document.getElementById("unit").value;
+
+  const result = document.getElementById("result");
+  const advice = document.getElementById("advice");
+  const gauge = document.getElementById("gaugeFill");
+  const ideal = document.getElementById("idealWeight");
+
+  if (!weight || !height || height <= 0) {
+    result.innerHTML = "Please enter valid values";
+    result.style.color = "red";
+    advice.innerHTML = "";
+    ideal.innerHTML = "";
+    gauge.style.width = "0%";
+    return;
+  }
+
+  if (unit === "cm") height = height / 100;
+
+  const bmi = weight / (height * height);
+  const bmiFixed = bmi.toFixed(2);
+
+  let category = "";
+  let color = "";
+  let message = "";
+
+  if (bmi < 18.5) {
+    category = "Underweight";
+    color = "#4fc3f7";
+    message = "Try increasing healthy calorie intake.";
+  } else if (bmi < 25) {
+    category = "Normal weight";
+    color = "#00e676";
+    message = "Great! Maintain your lifestyle.";
+  } else if (bmi < 30) {
+    category = "Overweight";
+    color = "#ffca28";
+    message = "Consider regular exercise.";
+  } else {
+    category = "Obese";
+    color = "#ff5252";
+    message = "Consult a healthcare professional.";
+  }
+
+  result.innerHTML = `BMI: ${bmiFixed} — ${category}`;
+  result.style.color = color;
+  advice.innerHTML = message;
+
+  let percent = ((bmi - 10) / 30) * 100;
+  percent = Math.max(0, Math.min(100, percent));
+  gauge.style.width = percent + "%";
+
+  const minWeight = (18.5 * height * height).toFixed(1);
+  const maxWeight = (24.9 * height * height).toFixed(1);
+
+  ideal.innerHTML =
+    `Ideal weight range: <b>${minWeight} kg – ${maxWeight} kg</b>`;
+}
+
+function resetBMI() {
+  document.getElementById("weight").value = "";
+  document.getElementById("height").value = "";
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("advice").innerHTML = "";
+  document.getElementById("idealWeight").innerHTML = "";
+  document.getElementById("gaugeFill").style.width = "0%";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Currency Converter</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,.4);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255,255,255,.2);
+            color: white;
+            outline: none;
+        }
+
+        select option {
+            background: #203a43;
+            color: white;
+        }
+
+        .swap-btn {
+            width: 50px;
+            height: 50px;
+            margin: 8px auto;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .swap-btn:hover {
+            background: #00ffd5;
+            color: black;
+            transform: rotate(180deg);
+        }
+
+        button.action {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-weight: bold;
+        }
+
+        button.action:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(0,255,213,.3);
+        }
+
+        .small {
+            color: #b7dbe5;
+            font-size: .95rem;
+        }
+
+        .big {
+            color: #00ffd5;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 8px;
+            word-break: break-word;
+        }
+
+        .status {
+            color: #9fd;
+            font-size: .85rem;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="calculator">
+
+        <h2>Currency Converter</h2>
+
+        <input type="number" id="amount" placeholder="Enter amount" oninput="convertCurrency()">
+
+        <select id="from" onchange="convertCurrency()">
+            <option value="INR">🇮🇳 Indian Rupee (INR)</option>
+            <option value="USD">🇺🇸 US Dollar (USD)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="GBP">🇬🇧 Pound Sterling (GBP)</option>
+            <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+        </select>
+
+        <button class="swap-btn" onclick="swapCurrency()">⇅</button>
+
+        <select id="to" onchange="convertCurrency()">
+            <option value="USD">🇺🇸 US Dollar (USD)</option>
+            <option value="INR">🇮🇳 Indian Rupee (INR)</option>
+            <option value="EUR">🇪🇺 Euro (EUR)</option>
+            <option value="GBP">🇬🇧 Pound Sterling (GBP)</option>
+            <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+        </select>
+
+        <button class="action" onclick="resetCurrency()">Reset</button>
+
+        <div class="result">
+            <div class="small" id="preview">Enter an amount</div>
+            <div class="big" id="result">—</div>
+        </div>
+
+        <div class="status" id="status">Loading live rates...</div>
+
+    </div>
+
+</div>
+
+<script>
+
+let rates={};
+
+async function loadRates(){
+
+    try{
+
+        const res=await fetch("https://open.er-api.com/v6/latest/USD");
+        const data=await res.json();
+
+        rates=data.rates;
+
+        document.getElementById("status").innerHTML="Live exchange rates loaded";
+
+        convertCurrency();
+
+    }catch{
+
+        document.getElementById("status").innerHTML="Unable to load live rates";
+    }
+
+}
+
+function convertCurrency(){
+
+    const amount=parseFloat(document.getElementById("amount").value);
+
+    if(isNaN(amount)||!rates.USD){
+        document.getElementById("preview").innerHTML="Enter an amount";
+        document.getElementById("result").innerHTML="—";
+        return;
+    }
+
+    const from=document.getElementById("from").value;
+    const to=document.getElementById("to").value;
+
+    const usd=amount/rates[from];
+    const converted=usd*rates[to];
+
+    const fromText=document.getElementById("from").options[document.getElementById("from").selectedIndex].text;
+    const toText=document.getElementById("to").options[document.getElementById("to").selectedIndex].text;
+
+    document.getElementById("preview").innerHTML=`${amount} ${fromText}`;
+
+    document.getElementById("result").innerHTML=
+        `${converted.toFixed(2)} ${toText}`;
+
+}
+
+function swapCurrency(){
+
+    const from=document.getElementById("from");
+    const to=document.getElementById("to");
+
+    const temp=from.selectedIndex;
+    from.selectedIndex=to.selectedIndex;
+    to.selectedIndex=temp;
+
+    convertCurrency();
+
+}
+
+function resetCurrency(){
+
+    document.getElementById("amount").value="";
+    document.getElementById("from").selectedIndex=0;
+    document.getElementById("to").selectedIndex=1;
+
+    document.getElementById("preview").innerHTML="Enter an amount";
+    document.getElementById("result").innerHTML="—";
+
+}
+
+loadRates();
+
+</script>
+
+</body>
+</html>

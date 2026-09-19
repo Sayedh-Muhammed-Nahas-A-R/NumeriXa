@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>NumeriXa – CGPA Calculator</title>
+      <link rel="stylesheet" href="all.css">
+     <link rel="stylesheet" href="body.css">
+
+  
+  <style>
+
+    .calculator {
+      max-width: 450px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    select:disabled {
+      background: rgba(255, 255, 255, 0.2);
+      color: #00ffd5;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 6px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    button:hover {
+      background: #00ffd5;
+      color: black;
+    }
+
+    .result {
+      margin-top: 12px;
+      color: #00ffd5;
+      font-size: 1.2rem;
+    }
+
+   
+
+
+    .subject-row {
+      margin-top: 10px;
+    }
+
+    .subject-row div {
+      margin-bottom: 6px;
+    }
+
+    input:disabled {
+      background: #ffffff;
+      color: #000000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div>
+    <h1 class="dashboard-heading">NumeriXa</h1>
+    <a href="dashboard.html" class="back-btn"> Back to Dashboard</a>
+
+    <div class="calculator">
+      <h2>Computer Engineering CGPA Calculator</h2>
+
+      <div id="subjects"></div>
+
+      <button onclick="addSubject()">Add Subject</button>
+      <button onclick="calculateCGPA()">Calculate CGPA</button>
+      <button onclick="resetCGPA()">Reset</button>
+
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    // Subjects with credits for Computer Engineering Semester (polytechnic)
+ const polySubjects = [
+
+  { name: "Mathematics", credit: 4 },
+  { name: "Physics", credit: 3 },
+  { name: "Chemistry", credit: 3 },
+  { name: "Environmental Studies", credit: 1 },
+  { name: "Engineering Drawing", credit: 2 },
+  { name: "Workshop Practice", credit: 2 },
+
+  { name: "Computer Programming", credit: 3 },
+  { name: "Data Structures", credit: 3 },
+  { name: "Operating Systems", credit: 3 },
+  { name: "Database Management Systems", credit: 3 },
+  { name: "Computer Networks", credit: 3 },
+  { name: "Web Technology", credit: 2 },
+  { name: "Object Oriented Programming", credit: 3 },
+  { name: "Software Engineering", credit: 3 },
+  { name: "Cloud Computing", credit: 3 },
+  { name: "Cyber Security", credit: 3 },
+  { name: "Artificial Intelligence", credit: 3 },
+  { name: "Machine Learning", credit: 3 },
+  { name: "Robotic Process Automation", credit: 3 },
+
+  { name: "Building Construction", credit: 3 },
+  { name: "Structural Engineering", credit: 3 },
+  { name: "Surveying", credit: 3 },
+  { name: "Environmental Engineering", credit: 3 },
+  { name: "Public Health Engineering", credit: 3 },
+  { name: "Rural Engineering", credit: 3 },
+
+  { name: "Engineering Mechanics", credit: 4 },
+  { name: "Thermodynamics", credit: 3 },
+  { name: "Machine Design", credit: 3 },
+  { name: "Manufacturing Technology", credit: 3 },
+  { name: "Automobile Engineering", credit: 3 },
+  { name: "Mechatronics", credit: 3 },
+  { name: "Tool & Die Engineering", credit: 3 },
+
+  { name: "Electrical Engineering", credit: 3 },
+  { name: "Electrical & Electronics Engineering", credit: 3 },
+  { name: "Electric Vehicles Technology", credit: 3 },
+  { name: "Power Systems", credit: 3 },
+
+  { name: "Digital Electronics", credit: 3 },
+  { name: "Microprocessors", credit: 3 },
+  { name: "Micro Electronics", credit: 3 },
+  { name: "Integrated Circuit Design & Fabrication", credit: 3 },
+  { name: "Instrumentation Engineering", credit: 3 },
+  { name: "Electronics and Communication", credit: 3 },
+
+  { name: "Chemical Engineering", credit: 3 },
+  { name: "Biomedical Engineering", credit: 3 },
+  { name: "Polymer Technology", credit: 3 },
+
+  { name: "Automation and Robotics", credit: 3 },
+  { name: "Industrial Training/Project", credit: 2 },
+  { name: "Printing Technology", credit: 3 },
+
+  { name: "Textile Technology", credit: 3 },
+  { name: "Wood and Paper Technology", credit: 3 },
+  { name: "Food Processing Technology", credit: 3 },
+
+  { name: "Architecture", credit: 4 },
+  { name: "Architectural Design", credit: 3 },
+
+  { name: "Commercial Practice", credit: 3 },
+  { name: "Hotel Management and Catering Technology", credit: 3 },
+  { name: "Fire Technology and Safety", credit: 3 },
+  { name: "Renewable Energy", credit: 3 }
+
+];
+    const grades = ["S","A", "B", "C", "D", "E", "F"]; // Added E
+
+    // Add first subject row
+    addSubject();
+
+    function addSubject() {
+      const row = document.createElement("div");
+      row.className = "subject-row";
+
+      // Subject select
+      const subjSelect = document.createElement("select");
+      subjSelect.className = "subject";
+      subjSelect.onchange = function () { updateCredit(this); };
+      const defaultOpt = document.createElement("option");
+      defaultOpt.text = "Select Subject";
+      defaultOpt.value = "";
+      subjSelect.appendChild(defaultOpt);
+
+      polySubjects.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.name;
+        opt.text = s.name;
+        subjSelect.appendChild(opt);
+      });
+
+      // Credit input (read-only)
+      const creditInput = document.createElement("input");
+      creditInput.type = "text";
+      creditInput.className = "credit";
+      creditInput.placeholder = "Credit";
+      creditInput.disabled = true;
+
+      // Grade select
+      const gradeSelect = document.createElement("select");
+      gradeSelect.className = "grade";
+      grades.forEach(g => {
+        const opt = document.createElement("option");
+        opt.value = g;
+        opt.text = g;
+        gradeSelect.appendChild(opt);
+      });
+
+      row.appendChild(subjSelect);
+      row.appendChild(creditInput);
+      row.appendChild(gradeSelect);
+      document.getElementById("subjects").appendChild(row);
+    }
+
+    // Update credit when subject is selected
+    function updateCredit(sel) {
+      const subName = sel.value;
+      const creditInput = sel.nextSibling;
+      if (!subName) {
+        creditInput.value = "";
+        return;
+      }
+      const credit = polySubjects.find(s => s.name == subName).credit;
+      creditInput.value = credit;
+    }
+
+    // Grade to points (E = 0.5, F = 0)
+    function gradeToPoint(g) {
+  g = g.toUpperCase();
+
+  if (g == "S") return 10;
+  if (g == "A") return 9;
+  if (g == "B") return 8;
+  if (g == "C") return 7;
+  if (g == "D") return 6;
+  if (g == "E") return 5;
+  return 0; // F
+}
+
+    // Calculate CGPA
+    function calculateCGPA() {
+      const rows = document.querySelectorAll(".subject-row");
+      let totalPoints = 0;
+      let totalCredits = 0;
+      const usedSubjects = new Set();
+
+      for (let i = 0; i < rows.length; i++) {
+        const subjSelect = rows[i].querySelector(".subject");
+        const creditInput = rows[i].querySelector(".credit");
+        const gradeSelect = rows[i].querySelector(".grade");
+
+        if (!subjSelect.value) {
+          alert("Please select a subject in row " + (i + 1));
+          return;
+        }
+
+        // Prevent duplicate subjects
+        if (usedSubjects.has(subjSelect.value)) {
+          alert("Subject '" + subjSelect.value + "' selected multiple times.");
+          return;
+        }
+        usedSubjects.add(subjSelect.value);
+
+        const credit = parseFloat(creditInput.value);
+        const grade = gradeSelect.value.toUpperCase();
+
+        totalPoints += gradeToPoint(grade) * credit;
+        totalCredits += credit;
+      }
+if (totalCredits === 0) {
+  document.getElementById("result").innerHTML = "Please add valid subjects.";
+  return;
+}
+
+const cgpa = (totalPoints / totalCredits).toFixed(2);
+document.getElementById("result").innerHTML = "CGPA: " + cgpa;
+    }
+
+    // Reset
+    function resetCGPA() {
+      document.getElementById("subjects").innerHTML = "";
+      addSubject();
+      document.getElementById("result").innerHTML = "";
+    }
+  </script>
+
+</body>
+
+</html>

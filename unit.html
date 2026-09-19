@@ -1,0 +1,331 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Conversion Hub</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+    <link rel="stylesheet" href="dashboard.css">
+
+    <style>
+        body {
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .calculator-dashboard {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .calculator-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .card {
+            width: 100%;
+            padding: 22px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(12px);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,255,213,.35);
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: #00ffd5;
+            margin-bottom: 6px;
+        }
+
+        .card p {
+            color: #ddd;
+            font-size: .9rem;
+        }
+
+        @media (max-width:768px){
+            .calculator-cards{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+
+        @media (max-width:420px){
+            .calculator-cards{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="calculator-dashboard">
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="calculator-cards">
+
+        <div class="card" onclick="openUnit('length')">
+            <div class="icon">📏</div>
+            <h3>Length</h3>
+            <p>Meter, KM, Inch</p>
+        </div>
+
+        <div class="card" onclick="openUnit('weight')">
+            <div class="icon">⚖️</div>
+            <h3>Weight</h3>
+            <p>KG, Gram, Pound</p>
+        </div>
+
+        <div class="card" onclick="openUnit('temperature')">
+            <div class="icon">🌡️</div>
+            <h3>Temperature</h3>
+            <p>°C, °F, Kelvin</p>
+        </div>
+
+        <div class="card" onclick="openUnit('speed')">
+            <div class="icon">🚗</div>
+            <h3>Speed</h3>
+            <p>km/h, mph, m/s</p>
+        </div>
+
+        <div class="card" onclick="openUnit('time')">
+            <div class="icon">⏰</div>
+            <h3>Time</h3>
+            <p>Second, Minute, Hour</p>
+        </div>
+
+        <div class="card" onclick="openUnit('volume')">
+            <div class="icon">🥛</div>
+            <h3>Volume</h3>
+            <p>Liter, mL</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function openUnit(type){
+
+    if(type==="length"){
+        window.location.href="length.html";
+    }
+    else if(type==="weight"){
+        window.location.href="weight.html";
+    }
+    else if(type==="temperature"){
+        window.location.href="temperature.html";
+    }
+    else if(type==="speed"){
+        window.location.href="speed.html";
+    }
+    else if(type==="time"){
+        window.location.href="timeunit.html";
+    }
+    else if(type==="volume"){
+        window.location.href="volume.html";
+    }
+
+}
+</script>
+
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Conversion Hub</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        body {
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 18px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: .3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,.35);
+        }
+
+        .card:hover{
+            transform: translateY(-5px);
+            box-shadow:0 10px 25px rgba(0,255,213,.35);
+        }
+
+        .icon{
+            font-size:3rem;
+            margin-bottom:10px;
+        }
+
+        .card h3{
+            color:#00ffd5;
+            margin-bottom:6px;
+            font-size:1.15rem;
+        }
+
+        .card p{
+            color:#d7d7d7;
+            font-size:.9rem;
+        }
+
+        @media(max-width:768px){
+            .cards{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+
+        @media(max-width:420px){
+            .cards{
+                grid-template-columns:repeat(2,1fr);
+                gap:14px;
+            }
+
+            .card{
+                padding:18px 12px;
+            }
+
+            .icon{
+                font-size:2.4rem;
+            }
+
+            .card h3{
+                font-size:1rem;
+            }
+
+            .card p{
+                font-size:.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="cards">
+
+        <div class="card" onclick="openUnit('length')">
+            <div class="icon">📏</div>
+            <h3>Length</h3>
+            <p>Meter • KM • Inch</p>
+        </div>
+
+        <div class="card" onclick="openUnit('weight')">
+            <div class="icon">⚖️</div>
+            <h3>Weight</h3>
+            <p>KG • Gram • Pound</p>
+        </div>
+
+        <div class="card" onclick="openUnit('temperature')">
+            <div class="icon">🌡️</div>
+            <h3>Temperature</h3>
+            <p>°C • °F • Kelvin</p>
+        </div>
+
+        <div class="card" onclick="openUnit('speed')">
+            <div class="icon">🚗</div>
+            <h3>Speed</h3>
+            <p>km/h • mph • m/s</p>
+        </div>
+
+        <div class="card" onclick="openUnit('time')">
+            <div class="icon">⏰</div>
+            <h3>Time</h3>
+            <p>Sec • Min • Hour</p>
+        </div>
+
+        <div class="card" onclick="openUnit('volume')">
+            <div class="icon">🥛</div>
+            <h3>Volume</h3>
+            <p>Liter • mL</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function openUnit(type){
+
+    switch(type){
+
+        case "length":
+            window.location.href="length.html";
+            break;
+
+        case "weight":
+            window.location.href="weight.html";
+            break;
+
+        case "temperature":
+            window.location.href="temperature.html";
+            break;
+
+        case "speed":
+            window.location.href="speed.html";
+            break;
+
+        case "time":
+            window.location.href="timeunit.html";
+            break;
+
+        case "volume":
+            window.location.href="volume.html";
+            break;
+    }
+
+}
+
+</script>
+
+</body>
+</html>

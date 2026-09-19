@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Compound Interest+</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, .1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, .4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, .2);
+            color: white;
+            outline: none;
+        }
+
+        select option {
+            background: #203a43;
+            color: white;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        input:focus,
+        select:focus {
+            background: rgba(255, 255, 255, .3);
+            box-shadow: 0 0 10px #00ffd5;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, .2);
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(0, 255, 213, .3);
+            text-align: left;
+        }
+
+        .result p {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            color: white;
+        }
+
+        .total {
+            color: #00ffd5;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-top: 1px solid rgba(255, 255, 255, .2);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+        <div class="calculator">
+
+            <h2>Compound Interest+</h2>
+
+            <input type="number" id="principal" placeholder="Principal Amount (₹)" oninput="calculateCI()">
+
+            <input type="number" id="rate" placeholder="Annual Interest Rate (%)" oninput="calculateCI()">
+
+            <input type="number" id="time" placeholder="Time (Years)" oninput="calculateCI()">
+
+            <select id="compound" onchange="calculateCI()">
+                <option value="1">Yearly</option>
+                <option value="2">Half-Yearly</option>
+                <option value="4">Quarterly</option>
+                <option value="12" selected>Monthly</option>
+                <option value="365">Daily</option>
+            </select>
+
+            <button onclick="resetCI()">Reset</button>
+
+            <div class="result" id="result">
+                <p><span>Principal</span><span>₹0.00</span></p>
+                <p><span>Interest</span><span>₹0.00</span></p>
+                <p><span>Growth</span><span>0%</span></p>
+                <p><span>Time</span><span>0 Years</span></p>
+                <p class="total"><span>Maturity Amount</span><span>₹0.00</span></p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function format(v) {
+            return Number(v).toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function calculateCI() {
+
+            const p = parseFloat(document.getElementById("principal").value);
+            const r = parseFloat(document.getElementById("rate").value);
+            const t = parseFloat(document.getElementById("time").value);
+            const n = parseFloat(document.getElementById("compound").value);
+
+            if (isNaN(p) || isNaN(r) || isNaN(t)) {
+                resetResult();
+                return;
+            }
+
+            const amount = p * Math.pow((1 + r / (100 * n)), n * t);
+            const interest = amount - p;
+            const growth = (interest / p) * 100;
+
+            document.getElementById("result").innerHTML = `
+        <p><span>Principal</span><span>₹${format(p)}</span></p>
+        <p><span>Interest Earned</span><span>₹${format(interest)}</span></p>
+        <p><span>Growth</span><span>${growth.toFixed(2)}%</span></p>
+        <p><span>Time</span><span>${t} Year${t != 1 ? "s" : ""}</span></p>
+        <p class="total"><span>Maturity Amount</span><span>₹${format(amount)}</span></p>
+    `;
+        }
+
+        function resetResult() {
+
+            document.getElementById("result").innerHTML = `
+        <p><span>Principal</span><span>₹0.00</span></p>
+        <p><span>Interest</span><span>₹0.00</span></p>
+        <p><span>Growth</span><span>0%</span></p>
+        <p><span>Time</span><span>0 Years</span></p>
+        <p class="total"><span>Maturity Amount</span><span>₹0.00</span></p>
+    `;
+        }
+
+        function resetCI() {
+
+            document.getElementById("principal").value = "";
+            document.getElementById("rate").value = "";
+            document.getElementById("time").value = "";
+            document.getElementById("compound").value = "12";
+            resetResult();
+
+        }
+
+    </script>
+
+</body>
+
+</html>

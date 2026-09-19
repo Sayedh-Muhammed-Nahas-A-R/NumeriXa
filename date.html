@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Date Difference</title>
+        <link rel="stylesheet" href="all.css">
+     <link rel="stylesheet" href="body.css">
+
+    <style>
+     
+
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 12px;
+            color: #00ffd5;
+            font-size: 1.2rem;
+        }
+
+       
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <h1 class="dashboard-heading">NumeriXa</h1>
+        <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+        <div class="calculator">
+            <h2>Date Difference Calculator</h2>
+
+            <input type="date" id="startDate" placeholder="Start Date">
+            <input type="date" id="endDate" placeholder="End Date">
+
+            <button onclick="calculateDiff()">Calculate Difference</button>
+            <button onclick="resetDates()">Reset</button>
+
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateDiff() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            if (!start || !end) {
+                alert("Please select both dates.");
+                return;
+            }
+
+            const startD = new Date(start);
+            const endD = new Date(end);
+
+            if (endD < startD) {
+                alert("End date must be after start date.");
+                return;
+            }
+
+            // Calculate difference in milliseconds
+            const diffMs = endD - startD;
+
+            // Convert to days, months, years
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffYears = endD.getFullYear() - startD.getFullYear();
+            const diffMonths = endD.getMonth() - startD.getMonth() + diffYears * 12;
+
+            document.getElementById('result').innerHTML =
+                `Days: ${diffDays} <br>
+     Months: ${diffMonths} <br>
+     Years: ${diffYears}`;
+        }
+
+        function resetDates() {
+            document.getElementById('startDate').value = "";
+            document.getElementById('endDate').value = "";
+            document.getElementById('result').innerHTML = "";
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NumeriXa</title>
+
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="all.css">
+</head>
+
+<body>
+
+  <div class="calculator-dashboard">
+
+    <!-- Header Section -->
+    <header class="dashboard-header">
+      <h1 class="dashboard-heading">NumeriXa</h1>
+      <a href="index.html" class="back-btn">
+        &larr; Back to Dashboard
+      </a>
+    </header>
+
+    <!-- Cards Grid -->
+    <main class="calculator-cards active" id="dashboard">
+
+      <!-- Normal Calculator -->
+      <div class="card" onclick="openCalculator('normal')">
+        <div class="icon">🖩</div>
+        <h3>Normal Calculator</h3>
+        <p>Basic arithmetic operations</p>
+      </div>
+
+      <!-- Scientific Calculator -->
+      <div class="card" onclick="openCalculator('scientific')">
+        <div class="icon">🔬</div>
+        <h3>Scientific Calculator</h3>
+        <p>Advanced functions, trig, log</p>
+      </div>
+
+      <!-- EMI Calculator -->
+      <div class="card" onclick="openCalculator('finance')">
+        <div class="icon">💰</div>
+        <h3>EMI Calculator</h3>
+        <p>EMI & loan calculations</p>
+      </div>
+
+      <!-- BMI Calculator -->
+      <div class="card" onclick="openCalculator('bmi')">
+        <div class="icon">⚖️</div>
+        <h3>BMI Calculator</h3>
+        <p>Body mass index tracking</p>
+      </div>
+
+      <!-- CGPA Calculator -->
+      <div class="card" onclick="openCalculator('cgpa')">
+        <div class="icon">📚</div>
+        <h3>CGPA Calculator</h3>
+        <p>Grade & GPA calculation</p>
+      </div>
+
+      <!-- Time Calculator -->
+      <div class="card" onclick="openCalculator('time')">
+        <div class="icon">⏱</div>
+        <h3>Time Calculator</h3>
+        <p>Hours conversion & stopwatch</p>
+      </div>
+
+      <!-- Date Difference -->
+      <div class="card" onclick="openCalculator('date')">
+        <div class="icon">📅</div>
+        <h3>Date Difference</h3>
+        <p>Calculate days between dates</p>
+      </div>
+
+      <!-- Percentage Calculator -->
+      <div class="card" onclick="openCalculator('percentage')">
+        <div class="icon">%</div>
+        <h3>Percentage Calculator</h3>
+        <p>Percent, increase & decrease</p>
+      </div>
+
+      <!-- Age Calculator -->
+      <div class="card upper-card" onclick="openCalculator('lifetimeline')">
+        <div class="icon">🎂</div>
+        <h3>Life Timeline</h3>
+        <p>Age & birthday details</p>
+      </div>
+
+      <!-- Unit Converter -->
+      <div class="card upper-card" onclick="openCalculator('unit')">
+        <div class="icon">📐</div>
+        <h3>Conversion Hub</h3>
+        <p>Length, Weight & More</p>
+      </div>
+
+      <!-- Currency Converter -->
+      <div class="card upper-card" onclick="openCalculator('currency')">
+        <div class="icon">💱</div>
+        <h3>Currency</h3>
+        <p>Live exchange rates</p>
+      </div>
+
+      <!-- GST Calculator -->
+      <div class="card upper-card" onclick="openCalculator('gst')">
+        <div class="icon">🧾</div>
+        <h3>GST Calculator+</h3>
+        <p>Add, Remove & Split GST</p>
+      </div>
+
+      <!-- Attendance Tracker -->
+      <div class="card upper-card" onclick="openCalculator('attendance')">
+        <div class="icon">📚</div>
+        <h3>Attendance</h3>
+        <p>Track your class attendance</p>
+      </div>
+      <!-- Simple Interest Calculator -->
+      <div class="card upper-card" onclick="openCalculator('simpleinterest')">
+        <div class="icon">💰</div>
+        <h3>Simple Interest+</h3>
+        <p>Interest & Total Amount</p>
+      </div>
+      <!-- Compound Interest Calculator -->
+      <div class="card upper-card" onclick="openCalculator('compoundinterest')">
+        <div class="icon">📈</div>
+        <h3>Compound Interest+</h3>
+        <p>Investment Growth</p>
+      </div>
+
+      <!-- BMR Calculator -->
+      <div class="card upper-card" onclick="openCalculator('bmr')">
+        <div class="icon">🔥</div>
+        <h3>BMR Calculator</h3>
+        <p>Daily calorie needs</p>
+      </div>
+
+      <!-- Attendance Tracker -->
+      <div class="card upper-card" onclick="openCalculator('attendance')">
+        <div class="icon">📚</div>
+        <h3>Attendance</h3>
+        <p>Track your class attendance</p>
+      </div>
+
+      <!-- Body Fat Calculator -->
+      <div class="card upper-card" onclick="openCalculator('bodyfat')">
+        <div class="icon">💪</div>
+        <h3>Body Fat</h3>
+        <p>Body fat percentage</p>
+      </div>
+
+      <div class="coming-soon">
+    <p>🚀 More calculators are coming soon. Stay tuned for the next NumeriXa update.</p>
+</div>
+    </main>
+
+  </div>
+
+  <script src="dashboard.js"></script>
+
+</body>
+
+</html>

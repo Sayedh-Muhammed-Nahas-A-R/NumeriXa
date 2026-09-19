@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinCalc Pro - EMI Calculator</title>
+  <link rel="stylesheet" href="all.css">
+       <link rel="stylesheet" href="body.css">
+
+  <style>
+ 
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px 25px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 450px;
+      transition: transform 0.3s ease;
+    }
+
+   
+
+    .calculator h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    .input-group {
+      margin: 15px 0;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transition: 0.3s;
+      margin-right: 80px;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px #00ffd5;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .result p {
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+
+   
+  </style>
+</head>
+
+<body>
+  <div>
+    <header>
+      <h1 class="dashboard-heading">NumeriXa</h1>
+    </header>
+    <a href="dashboard.html" class="back-btn">
+      Back to Dashboard
+    </a>
+
+    <div class="calculator">
+      <h1>EMI Calculator</h1>
+
+      <div class="input-group">
+        <label>Principal (₹)</label>
+        <input type="number" min="0" id="principal" placeholder="Enter principal">
+      </div>
+      <div class="input-group">
+        <label>Interest Rate (%)</label>
+        <input type="number" min="0" id="rate" placeholder="Annual rate">
+      </div>
+      <div class="input-group">
+        <label>Tenure (Years)</label>
+        <input type="number" min="0" id="tenure" placeholder="Years">
+      </div>
+
+      <button onclick="calculateEMI()">Calculate EMI</button><br><br>
+      <hr>
+
+      <div class="result">
+        <p>EMI: ₹<span id="emi">0.00</span></p>
+        <p>Total Payment: ₹<span id="totalPayment">0.00</span></p>
+        <p>Total Interest: ₹<span id="totalInterest">0.00</span></p>
+      </div>
+    </div>
+
+    <script>
+      function calculateEMI() {
+        const P = parseFloat(document.getElementById("principal").value);
+        const rate = parseFloat(document.getElementById("rate").value);
+        const years = parseFloat(document.getElementById("tenure").value);
+
+        if (isNaN(P) || isNaN(rate) || isNaN(years) || P <= 0 || years <= 0) {
+          alert("Please enter valid positive numbers");
+          return;
+        }
+
+        const R = rate / 12 / 100;
+        const N = years * 12;
+
+        let EMI;
+
+        // ✅ Handle 0% interest case
+        if (R === 0) {
+          EMI = P / N;
+        } else {
+          EMI = (P * R * Math.pow(1 + R, N)) /
+            (Math.pow(1 + R, N) - 1);
+        }
+
+        const totalPayment = EMI * N;
+        const totalInterest = totalPayment - P;
+
+        document.getElementById("emi").innerText = EMI.toFixed(2);
+        document.getElementById("totalPayment").innerText = totalPayment.toFixed(2);
+        document.getElementById("totalInterest").innerText = totalInterest.toFixed(2);
+
+        document.querySelector(".result").style.display = "block";
+      }
+    </script>
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – BMR Calculator</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator{
+            max-width:400px;
+            width:100%;
+            background:rgba(255,255,255,.1);
+            backdrop-filter:blur(12px);
+            border-radius:16px;
+            padding:20px;
+            text-align:center;
+            box-shadow:0 0 20px rgba(0,0,0,.4);
+        }
+
+        input,select{
+            width:100%;
+            padding:12px;
+            margin:6px 0;
+            border:none;
+            border-radius:10px;
+            font-size:1rem;
+            text-align:center;
+            background:rgba(255,255,255,.2);
+            color:white;
+            outline:none;
+        }
+
+        select option{
+            background:#203a43;
+            color:white;
+        }
+
+        input::placeholder{
+            color:rgba(255,255,255,.7);
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:8px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            background:rgba(255,255,255,.2);
+            color:white;
+            font-weight:bold;
+        }
+
+        button:hover{
+            background:#00ffd5;
+            color:black;
+        }
+
+        .result{
+            margin-top:18px;
+            padding:16px;
+            border-radius:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(0,255,213,.3);
+            text-align:left;
+        }
+
+        .result p{
+            display:flex;
+            justify-content:space-between;
+            margin:8px 0;
+            color:white;
+        }
+
+        .total{
+            color:#00ffd5;
+            font-size:1.2rem;
+            font-weight:bold;
+            border-top:1px solid rgba(255,255,255,.2);
+            padding-top:10px;
+            margin-top:10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="calculator">
+
+        <h2>BMR Calculator</h2>
+
+        <select id="gender" onchange="calculateBMR()">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <input type="number" id="age" placeholder="Age (Years)" oninput="calculateBMR()">
+
+        <input type="number" id="weight" placeholder="Weight (kg)" oninput="calculateBMR()">
+
+        <input type="number" id="height" placeholder="Height (cm)" oninput="calculateBMR()">
+
+        <select id="activity" onchange="calculateBMR()">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Light Exercise</option>
+            <option value="1.55" selected>Moderate Exercise</option>
+            <option value="1.725">Very Active</option>
+            <option value="1.9">Athlete</option>
+        </select>
+
+        <button onclick="resetBMR()">Reset</button>
+
+        <div class="result" id="result">
+            <p><span>BMR</span><span>0 kcal</span></p>
+            <p><span>Daily Calories</span><span>0 kcal</span></p>
+            <p class="total"><span>Goal</span><span>—</span></p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function calculateBMR(){
+
+    const gender=document.getElementById("gender").value;
+    const age=parseFloat(document.getElementById("age").value);
+    const weight=parseFloat(document.getElementById("weight").value);
+    const height=parseFloat(document.getElementById("height").value);
+    const activity=parseFloat(document.getElementById("activity").value);
+
+    if(isNaN(age)||isNaN(weight)||isNaN(height)){
+        resetResult();
+        return;
+    }
+
+    let bmr;
+
+    if(gender==="male"){
+        bmr=10*weight+6.25*height-5*age+5;
+    }else{
+        bmr=10*weight+6.25*height-5*age-161;
+    }
+
+    const maintenance=bmr*activity;
+    const lose=maintenance-500;
+    const gain=maintenance+500;
+
+    document.getElementById("result").innerHTML=`
+        <p><span>BMR</span><span>${Math.round(bmr)} kcal</span></p>
+        <p><span>Maintain Weight</span><span>${Math.round(maintenance)} kcal</span></p>
+        <p><span>Lose Weight</span><span>${Math.round(lose)} kcal</span></p>
+        <p class="total"><span>Gain Weight</span><span>${Math.round(gain)} kcal</span></p>
+    `;
+}
+
+function resetResult(){
+    document.getElementById("result").innerHTML=`
+        <p><span>BMR</span><span>0 kcal</span></p>
+        <p><span>Daily Calories</span><span>0 kcal</span></p>
+        <p class="total"><span>Goal</span><span>—</span></p>
+    `;
+}
+
+function resetBMR(){
+
+    document.getElementById("gender").selectedIndex=0;
+    document.getElementById("activity").selectedIndex=2;
+    document.getElementById("age").value="";
+    document.getElementById("weight").value="";
+    document.getElementById("height").value="";
+    resetResult();
+}
+
+</script>
+
+</body>
+</html>

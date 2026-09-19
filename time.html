@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Numerixa – Time Calculator</title>
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        body{
+            align-items:flex-start;
+            padding-top:12px;
+            padding-bottom:20px;
+        }
+
+        .calculator{
+            max-width:420px;
+            width:100%;
+            background:rgba(255,255,255,.15);
+            backdrop-filter:blur(15px);
+            border-radius:20px;
+            padding:30px;
+            box-shadow:0 8px 25px rgba(0,0,0,.25);
+            text-align:center;
+            margin-top:8px;
+        }
+
+        h2{
+            margin-bottom:15px;
+        }
+
+        select,input{
+            width:100%;
+            padding:12px;
+            margin:8px 0;
+            border:none;
+            border-radius:12px;
+            background:rgba(255,255,255,.2);
+            color:#fff;
+            font-size:1rem;
+            outline:none;
+            appearance:none;
+        }
+
+        select option{
+            background:#203a43;
+            color:#fff;
+        }
+
+        input::placeholder{
+            color:rgba(255,255,255,.7);
+        }
+
+        input:focus,select:focus{
+            background:rgba(255,255,255,.3);
+            box-shadow:0 0 10px #00ffd5;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(90deg,#00f2fe,#4facfe);
+            color:#000;
+            font-weight:bold;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        button:hover{
+            transform:scale(1.03);
+            box-shadow:0 0 12px rgba(0,255,213,.6);
+        }
+
+        .button-row{
+            display:flex;
+            gap:10px;
+            margin-top:10px;
+        }
+
+        .button-row button{
+            flex:1;
+        }
+
+        .time-row{
+            display:flex;
+            gap:8px;
+        }
+
+        .time-row input,
+        .time-row select{
+            flex:1;
+        }
+
+        label{
+            display:block;
+            text-align:left;
+            margin-top:8px;
+            font-size:.95rem;
+        }
+
+        #result{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border:none;
+            border-radius:12px;
+            background:rgba(255,255,255,.18);
+            color:#00ffd5;
+            font-weight:bold;
+            text-align:center;
+        }
+
+        .stopwatch{
+            margin-top:25px;
+            padding-top:20px;
+            border-top:1px solid rgba(255,255,255,.2);
+        }
+
+        #watchTime{
+            font-size:2rem;
+            color:#fffa00;
+            text-shadow:0 0 10px #fffa00;
+            margin:15px 0;
+            font-weight:bold;
+        }
+
+        .watch-buttons{
+            display:flex;
+            gap:8px;
+        }
+
+        .watch-buttons button{
+            flex:1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">Numerixa</h1>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+<div class="calculator">
+
+<h2>Time Calculator</h2>
+
+<label>Time Format</label>
+
+<select id="format" onchange="changeFormat()">
+    <option value="12">12 Hour (AM/PM)</option>
+    <option value="24">24 Hour</option>
+</select>
+
+<label>Start Time</label>
+
+<div class="time-row">
+    <input type="number" id="h1" placeholder="HH">
+    <input type="number" id="m1" placeholder="MM">
+    <select id="ampm1">
+        <option>AM</option>
+        <option>PM</option>
+    </select>
+</div>
+
+<label>End Time</label>
+
+<div class="time-row">
+    <input type="number" id="h2" placeholder="HH">
+    <input type="number" id="m2" placeholder="MM">
+    <select id="ampm2">
+        <option>AM</option>
+        <option>PM</option>
+    </select>
+</div>
+
+<div class="button-row">
+    <button onclick="timeDifference()">Calculate</button>
+    <button onclick="resetTime()">Reset</button>
+</div>
+
+<input type="text" id="result" readonly placeholder="Time difference">
+
+<div class="stopwatch">
+
+<h2>Stopwatch</h2>
+
+<div id="watchTime">00:00:00</div>
+
+<div class="watch-buttons">
+<button onclick="startWatch()">Start</button>
+<button onclick="stopWatch()">Stop</button>
+<button onclick="resetWatch()">Reset</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function changeFormat(){
+
+const is24=document.getElementById("format").value==="24";
+
+["ampm1","ampm2"].forEach(id=>{
+document.getElementById(id).style.display=is24?"none":"block";
+});
+
+["h1","h2"].forEach(id=>{
+const box=document.getElementById(id);
+box.max=is24?23:12;
+box.placeholder=is24?"00-23":"1-12";
+});
+}
+
+function toMinutes(h,m,ap){
+
+if(document.getElementById("format").value==="24"){
+return h*60+m;
+}
+
+if(ap==="AM"){
+if(h===12)h=0;
+}
+else{
+if(h!==12)h+=12;
+}
+
+return h*60+m;
+}
+
+function timeDifference(){
+
+let h1=Number(document.getElementById("h1").value);
+let m1=Number(document.getElementById("m1").value);
+let h2=Number(document.getElementById("h2").value);
+let m2=Number(document.getElementById("m2").value);
+
+if(isNaN(h1)||isNaN(m1)||isNaN(h2)||isNaN(m2)||m1>59||m2>59){
+document.getElementById("result").value="Enter valid time";
+return;
+}
+
+if(document.getElementById("format").value==="12"){
+if(h1<1||h1>12||h2<1||h2>12){
+document.getElementById("result").value="Hours must be 1-12";
+return;
+}
+}
+else{
+if(h1>23||h2>23){
+document.getElementById("result").value="Hours must be 0-23";
+return;
+}
+}
+
+let start=toMinutes(h1,m1,document.getElementById("ampm1").value);
+let end=toMinutes(h2,m2,document.getElementById("ampm2").value);
+
+if(end<start){
+end+=1440;
+}
+
+let diff=end-start;
+
+let hrs=Math.floor(diff/60);
+let mins=diff%60;
+
+document.getElementById("result").value=`${hrs} hr ${mins} min`;
+}
+
+function resetTime(){
+
+["h1","m1","h2","m2"].forEach(id=>document.getElementById(id).value="");
+
+document.getElementById("result").value="";
+document.getElementById("format").value="12";
+changeFormat();
+}
+
+/* Stopwatch */
+
+let seconds=0;
+let timer=null;
+
+function updateWatch(){
+
+let h=Math.floor(seconds/3600);
+let m=Math.floor((seconds%3600)/60);
+let s=seconds%60;
+
+document.getElementById("watchTime").textContent=
+String(h).padStart(2,"0")+":"+
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0");
+}
+
+function startWatch(){
+
+if(timer===null){
+timer=setInterval(()=>{
+seconds++;
+updateWatch();
+},1000);
+}
+
+}
+
+function stopWatch(){
+
+clearInterval(timer);
+timer=null;
+}
+
+function resetWatch(){
+
+stopWatch();
+seconds=0;
+updateWatch();
+}
+
+changeFormat();
+updateWatch();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>NumeriXa – Temperature Converter</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,.4);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            background: rgba(255,255,255,.2);
+            color: white;
+            outline: none;
+        }
+
+        select option {
+            background: #203a43;
+            color: white;
+        }
+
+         input::placeholder {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        input:focus,
+        select:focus {
+            background: rgba(255, 255, 255, .3);
+            box-shadow: 0 0 10px #00ffd5;
+        }
+
+        .swap-btn {
+            width: 50px;
+            height: 50px;
+            margin: 8px auto;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .swap-btn:hover {
+            background: #00ffd5;
+            color: black;
+            transform: rotate(180deg);
+        }
+
+        button.action {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-weight: bold;
+        }
+
+        button.action:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(0,255,213,.3);
+        }
+
+        .small {
+            color: #b7dbe5;
+            font-size: .95rem;
+        }
+
+        .big {
+            color: #00ffd5;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 8px;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="unit.html" class="back-btn">Back to Unit Hub</a>
+
+    <div class="calculator">
+
+        <h2>Temperature Converter</h2>
+
+        <input type="number" id="value" placeholder="Enter temperature" oninput="convertTemperature()">
+
+        <select id="from" onchange="convertTemperature()">
+            <option value="C">Celsius (°C)</option>
+            <option value="F">Fahrenheit (°F)</option>
+            <option value="K">Kelvin (K)</option>
+        </select>
+
+        <button class="swap-btn" onclick="swapUnits()">⇅</button>
+
+        <select id="to" onchange="convertTemperature()">
+            <option value="F">Fahrenheit (°F)</option>
+            <option value="C">Celsius (°C)</option>
+            <option value="K">Kelvin (K)</option>
+        </select>
+
+        <button class="action" onclick="resetTemperature()">Reset</button>
+
+        <div class="result">
+            <div class="small" id="preview">Converted temperature will appear here</div>
+            <div class="big" id="result">—</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function convertTemperature(){
+
+    const value = parseFloat(document.getElementById("value").value);
+
+    if(isNaN(value)){
+        preview.innerHTML = "Enter a temperature";
+        result.innerHTML = "—";
+        return;
+    }
+
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+
+    let answer;
+
+    if(from === to){
+        answer = value;
+    }
+    else if(from === "C" && to === "F"){
+        answer = value * 9/5 + 32;
+    }
+    else if(from === "C" && to === "K"){
+        answer = value + 273.15;
+    }
+    else if(from === "F" && to === "C"){
+        answer = (value - 32) * 5/9;
+    }
+    else if(from === "F" && to === "K"){
+        answer = (value - 32) * 5/9 + 273.15;
+    }
+    else if(from === "K" && to === "C"){
+        answer = value - 273.15;
+    }
+    else if(from === "K" && to === "F"){
+        answer = (value - 273.15) * 9/5 + 32;
+    }
+
+    const fromText = document.getElementById("from").options[document.getElementById("from").selectedIndex].text;
+    const toText = document.getElementById("to").options[document.getElementById("to").selectedIndex].text;
+
+    preview.innerHTML = `${value} ${fromText}`;
+    result.innerHTML = `${Number(answer.toFixed(2)).toLocaleString()} ${toText}`;
+}
+
+function swapUnits(){
+
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+
+    const temp = from.selectedIndex;
+    from.selectedIndex = to.selectedIndex;
+    to.selectedIndex = temp;
+
+    convertTemperature();
+}
+
+function resetTemperature(){
+
+    document.getElementById("value").value = "";
+    document.getElementById("from").selectedIndex = 0;
+    document.getElementById("to").selectedIndex = 1;
+
+    preview.innerHTML = "Enter a temperature";
+    result.innerHTML = "—";
+}
+
+</script>
+
+</body>
+
+</html>

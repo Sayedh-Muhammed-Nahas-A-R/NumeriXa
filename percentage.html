@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Numerixa – Percentage Calculator</title>
+
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="body.css">
+
+    <style>
+        body {
+            align-items: flex-start;
+            padding-top: 12px;
+            padding-bottom: 20px;
+        }
+
+        .calculator {
+            max-width: 420px;
+            width: 100%;
+            background: rgba(255, 255, 255, .15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding-left: 70px;
+            padding-right: 70px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        select,
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .2);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            appearance: none;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        select option {
+            background: #203a43;
+            color: #fff;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            background: rgba(255, 255, 255, .3);
+            box-shadow: 0 0 10px #00ffd5;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 12px rgba(0, 255, 213, .6);
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .button-row button {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 8px;
+            font-size: .95rem;
+        }
+
+        #formula {
+            width: 100%;
+            min-height: 72px;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .18);
+            color: #c8ff00;
+            font-size: .95rem;
+            font-weight: 500;
+            line-height: 1.6;
+            resize: none;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-break: normal;
+            overflow-wrap: break-word;
+            text-align: left;
+        }
+
+        #result {
+            color: #00ffd5;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">Numerixa</h1>
+
+        <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+        <div class="calculator">
+
+            <h2>Percentage Calculator</h2>
+
+            <select id="type" onchange="changeFields(); calculate();">
+                <option value="" selected disabled hidden>Select The Category</option>
+                <option value="of">X% of Y</option>
+                <option value="what">X is what % of Y</option>
+                <option value="increase">Increase by %</option>
+                <option value="decrease">Decrease by %</option>
+                <option value="change">Percentage Change</option>
+                <option value="discount">Discount Calculator</option>
+                <option value="original">Original Price Before Discount</option>
+                <option value="profit">Profit/Loss %</option>
+                <option value="gstadd">Add GST</option>
+                <option value="gstremove">Remove GST</option>
+                <option value="marks">Marks Percentage</option>
+                <option value="attendance">Attendance %</option>
+                <option value="tip">Tip Calculator</option>
+                <option value="commission">Commission Calculator</option>
+                <option value="reverse">Reverse Percentage</option>
+            </select>
+
+            <label id="label1">Percentage</label>
+            <input type="number" id="num1" placeholder="Enter value" oninput="calculate()">
+
+            <label id="label2">Number</label>
+            <input type="number" id="num2" placeholder="Enter value" oninput="calculate()">
+
+            <label>Result</label>
+            <input type="text" id="result" readonly placeholder="Result will appear here">
+
+            <div class="button-row">
+                <button id="formulaBtn" onclick="toggleFormula()">Show Formula</button>
+                <button onclick="resetCalc()">Reset</button>
+            </div>
+            <div id="formulaSection" style="display:none;">
+                <label>Formula</label>
+                <textarea id="formula" rows="3" readonly></textarea>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const fieldNames = {
+            of: ["Percentage", "Number"],
+            what: ["Value", "Total"],
+            increase: ["Value", "Increase %"],
+            decrease: ["Value", "Decrease %"],
+            change: ["Old Value", "New Value"],
+            discount: ["Original Price", "Discount %"],
+            original: ["Final Price", "Discount %"],
+            profit: ["Cost Price", "Selling Price"],
+            gstadd: ["Amount", "GST %"],
+            gstremove: ["Amount", "GST %"],
+            marks: ["Obtained Marks", "Total Marks"],
+            attendance: ["Classes Attended", "Total Classes"],
+            tip: ["Bill Amount", "Tip %"],
+            commission: ["Sales Amount", "Commission %"],
+            reverse: ["Final Value", "Percentage"]
+        };
+
+        const formulas = {
+            of: "Result = (Percentage × Number) ÷ 100",
+
+            what: "Percentage = (Value ÷ Total) × 100",
+
+            increase: "New Value = Value × (1 + Percentage ÷ 100)",
+
+            decrease: "New Value = Value × (1 − Percentage ÷ 100)",
+
+            change: "Percentage Change = ((New Value − Old Value) ÷ Old Value) × 100",
+
+            discount: "Discount = Original Price × Discount % ÷ 100\nFinal Price = Original Price − Discount",
+
+            original: "Original Price = Final Price ÷ (1 − Discount % ÷ 100)",
+
+            profit: "Profit/Loss % = ((Selling Price − Cost Price) ÷ Cost Price) × 100",
+
+            gstadd: "Total Amount = Amount + (Amount × GST % ÷ 100)",
+
+            gstremove: "Original Amount = Amount ÷ (1 + GST % ÷ 100)",
+
+            marks: "Percentage = (Obtained Marks ÷ Total Marks) × 100",
+
+            attendance: "Attendance % = (Classes Attended ÷ Total Classes) × 100",
+
+            tip: "Total Bill = Bill Amount + (Bill Amount × Tip % ÷ 100)",
+
+            commission: "Commission = Sales Amount × Commission % ÷ 100",
+
+            reverse: "Original Value = Final Value ÷ (1 + Percentage ÷ 100)"
+        };
+
+        function changeFields() {
+            const t = document.getElementById("type").value;
+
+            if (!t || !fieldNames[t]) {
+                document.getElementById("label1").textContent = "First Value";
+                document.getElementById("label2").textContent = "Second Value";
+                document.getElementById("num1").value = "";
+                document.getElementById("num2").value = "";
+                document.getElementById("formula").value = "";
+                document.getElementById("result").value = "";
+                document.getElementById("formulaSection").style.display = "none";
+                return;
+            }
+
+            document.getElementById("label1").textContent = fieldNames[t][0];
+            document.getElementById("label2").textContent = fieldNames[t][1];
+
+            document.getElementById("num1").value = "";
+            document.getElementById("num2").value = "";
+            document.getElementById("formula").value = "";
+            document.getElementById("result").value = "";
+            document.getElementById("formulaSection").style.display = "none";
+        }
+
+        function toggleFormula() {
+
+    const section = document.getElementById("formulaSection");
+    const button = document.getElementById("formulaBtn");
+
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        button.textContent = "Hide Formula";
+    } else {
+        section.style.display = "none";
+        button.textContent = "Show Formula";
+    }
+}
+
+        function calculate() {
+
+            const t = document.getElementById("type").value;
+
+            if (!t) {
+                document.getElementById("result").value = "Please select a category.";
+                return;
+            } const a = parseFloat(document.getElementById("num1").value);
+            const b = parseFloat(document.getElementById("num2").value);
+
+            const formulaBox = document.getElementById("formula");
+            const resultBox = document.getElementById("result");
+
+            if (isNaN(a) || isNaN(b)) {
+                formulaBox.value = "";
+                resultBox.value = "Please enter valid values";
+                return;
+            }
+
+            formulaBox.value = formulas[t];
+            let ans = "";
+
+            switch (t) {
+
+                case "of":
+                    ans = (a * b / 100).toFixed(2);
+                    resultBox.value = `${a}% of ${b} = ${ans}`;
+                    break;
+
+                case "what":
+                    ans = ((a / b) * 100).toFixed(2);
+                    resultBox.value = `${a} is ${ans}% of ${b}`;
+                    break;
+
+                case "increase":
+                    ans = (a * (1 + b / 100)).toFixed(2);
+                    resultBox.value = `New Value = ${ans}`;
+                    break;
+
+                case "decrease":
+                    ans = (a * (1 - b / 100)).toFixed(2);
+                    resultBox.value = `New Value = ${ans}`;
+                    break;
+
+                case "change":
+                    ans = (((b - a) / a) * 100).toFixed(2);
+                    resultBox.value = `Percentage Change = ${ans}%`;
+                    break;
+
+                case "discount":
+                    let dis = (a * b / 100).toFixed(2);
+                    let finalPrice = (a - a * b / 100).toFixed(2);
+                    resultBox.value = `Discount: ₹${dis} | Final: ₹${finalPrice}`;
+                    break;
+
+                case "original":
+                    ans = (a / (1 - b / 100)).toFixed(2);
+                    resultBox.value = `Original Price = ₹${ans}`;
+                    break;
+
+                case "profit":
+                    let pl = (((b - a) / a) * 100);
+                    resultBox.value = `${pl >= 0 ? "Profit" : "Loss"}: ${Math.abs(pl).toFixed(2)}%`;
+                    break;
+
+                case "gstadd":
+                    let gst = (a * b / 100).toFixed(2);
+                    let total = (a + a * b / 100).toFixed(2);
+                    resultBox.value = `GST: ₹${gst} | Total: ₹${total}`;
+                    break;
+
+                case "gstremove":
+                    ans = (a / (1 + b / 100)).toFixed(2);
+                    resultBox.value = `Original Amount = ₹${ans}`;
+                    break;
+
+                case "marks":
+                    ans = ((a / b) * 100).toFixed(2);
+                    resultBox.value = `${ans}%`;
+                    break;
+
+                case "attendance":
+                    ans = ((a / b) * 100).toFixed(2);
+                    resultBox.value = `${ans}% Attendance`;
+                    break;
+
+                case "tip":
+                    let tip = (a * b / 100).toFixed(2);
+                    let bill = (a + a * b / 100).toFixed(2);
+                    resultBox.value = `Tip: ₹${tip} | Total: ₹${bill}`;
+                    break;
+
+                case "commission":
+                    ans = (a * b / 100).toFixed(2);
+                    resultBox.value = `Commission = ₹${ans}`;
+                    break;
+
+                case "reverse":
+                    ans = (a / (1 + b / 100)).toFixed(2);
+                    resultBox.value = `Original Value = ${ans}`;
+                    break;
+            }
+        }
+
+       function resetCalc() {
+
+    document.getElementById("type").selectedIndex = 0;
+    changeFields();
+
+    document.getElementById("result").value = "";
+    document.getElementById("formula").value = "";
+
+    document.getElementById("formulaSection").style.display = "none";
+    document.getElementById("formulaBtn").textContent = "Show Formula";
+}
+        changeFields();
+
+    </script>
+
+</body>
+
+</html>
