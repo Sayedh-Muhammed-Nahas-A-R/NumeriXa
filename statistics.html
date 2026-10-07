@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Statistics Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #ccc;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>📊 Statistics Calculator</h2>
+
+            <input
+                type="text"
+                id="numbers"
+                placeholder="Enter numbers: 10, 20, 30, 40"
+            >
+
+            <button onclick="calculateStatistics()">
+                Calculate
+            </button>
+
+            <button onclick="resetStatistics()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function calculateStatistics() {
+
+            const input =
+                document.getElementById("numbers").value.trim();
+
+            const result =
+                document.getElementById("result");
+
+            if (input === "") {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter some numbers.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const numbers =
+                input
+                    .split(",")
+                    .map(value => parseFloat(value.trim()));
+
+            if (
+                numbers.length === 0 ||
+                numbers.some(number => isNaN(number))
+            ) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter valid numbers separated by commas.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const sorted =
+                [...numbers].sort((a, b) => a - b);
+
+            const total =
+                numbers.reduce(
+                    (sum, number) => sum + number,
+                    0
+                );
+
+            const mean =
+                total / numbers.length;
+
+            let median;
+
+            const middle =
+                Math.floor(sorted.length / 2);
+
+            if (sorted.length % 2 === 0) {
+
+                median =
+                    (sorted[middle - 1] + sorted[middle]) / 2;
+
+            } else {
+
+                median =
+                    sorted[middle];
+
+            }
+
+            const frequency = {};
+
+            numbers.forEach(number => {
+
+                frequency[number] =
+                    (frequency[number] || 0) + 1;
+
+            });
+
+            let maxFrequency = 0;
+
+            Object.values(frequency).forEach(count => {
+
+                if (count > maxFrequency) {
+                    maxFrequency = count;
+                }
+
+            });
+
+            let mode = "No mode";
+
+            if (maxFrequency > 1) {
+
+                const modes =
+                    Object.keys(frequency)
+                        .filter(
+                            number =>
+                                frequency[number] === maxFrequency
+                        );
+
+                mode = modes.join(", ");
+            }
+
+            const minimum =
+                Math.min(...numbers);
+
+            const maximum =
+                Math.max(...numbers);
+
+            const range =
+                maximum - minimum;
+
+            const variance =
+                numbers.reduce(
+                    (sum, number) =>
+                        sum + Math.pow(number - mean, 2),
+                    0
+                ) / numbers.length;
+
+            const standardDeviation =
+                Math.sqrt(variance);
+
+            result.innerHTML = `
+
+                <div class="result-title">
+                    📊 Statistics Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Count:
+                    </span>
+
+                    <span class="result-value">
+                        ${numbers.length}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Mean:
+                    </span>
+
+                    <span class="result-value">
+                        ${mean.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Median:
+                    </span>
+
+                    <span class="result-value">
+                        ${median.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Mode:
+                    </span>
+
+                    <span class="result-value">
+                        ${mode}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Minimum:
+                    </span>
+
+                    <span class="result-value">
+                        ${minimum}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Maximum:
+                    </span>
+
+                    <span class="result-value">
+                        ${maximum}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Range:
+                    </span>
+
+                    <span class="result-value">
+                        ${range}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Standard Deviation:
+                    </span>
+
+                    <span class="result-value">
+                        ${standardDeviation.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="note">
+                    Enter numbers separated by commas.
+                </div>
+
+            `;
+        }
+
+        function resetStatistics() {
+
+            document.getElementById("numbers").value = "";
+
+            document.getElementById("result").innerHTML = "";
+        }
+
+    </script>
+
+</body>
+
+</html>

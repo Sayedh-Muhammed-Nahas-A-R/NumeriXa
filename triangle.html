@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NumeriXa – Triangle Calculator</title>
+
+<style>
+.calculator {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255,255,255,.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    background: rgba(255,255,255,.9);
+    color: #222;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,.2);
+    color: white;
+    font-weight: bold;
+    transition: .3s ease;
+}
+
+button:hover {
+    background: #00ffd5;
+    color: black;
+}
+
+.result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    color: #00ffd5;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    text-align: left;
+}
+
+.result-title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.result-label {
+    color: #ddd;
+}
+
+.result-value {
+    font-weight: bold;
+    color: #00ffd5;
+}
+
+.note {
+    margin-top: 10px;
+    text-align: center;
+    font-size: .82rem;
+    color: #ccc;
+}
+
+@media(max-width:500px) {
+    .calculator {
+        max-width: 100%;
+        padding: 18px;
+    }
+
+    .dashboard-heading {
+        font-size: 2.2rem;
+    }
+
+    .back-btn {
+        position: static;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .result {
+        font-size: 1rem;
+    }
+}
+</style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">NumeriXa</h1>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+<div class="calculator">
+
+<h2>📐 Triangle Calculator</h2>
+
+<p style="color:#ddd;">
+Enter the three sides of the triangle
+</p>
+
+<input type="number" id="sideA" placeholder="Side A" min="0" step="any">
+
+<input type="number" id="sideB" placeholder="Side B" min="0" step="any">
+
+<input type="number" id="sideC" placeholder="Side C" min="0" step="any">
+
+<button onclick="calculateTriangle()">Calculate</button>
+
+<button onclick="resetTriangle()">Reset</button>
+
+<div class="result" id="result"></div>
+
+</div>
+</div>
+
+<script>
+
+function calculateTriangle() {
+
+    const a = parseFloat(document.getElementById("sideA").value);
+    const b = parseFloat(document.getElementById("sideB").value);
+    const c = parseFloat(document.getElementById("sideC").value);
+
+    const result = document.getElementById("result");
+
+    if (
+        document.getElementById("sideA").value === "" ||
+        document.getElementById("sideB").value === "" ||
+        document.getElementById("sideC").value === ""
+    ) {
+        result.innerHTML = `
+        <div class="result-title">
+            Please enter all three sides.
+        </div>`;
+        return;
+    }
+
+    if (a <= 0 || b <= 0 || c <= 0) {
+        result.innerHTML = `
+        <div class="result-title">
+            ❌ Invalid Sides
+        </div>
+        <div class="note">
+            All sides must be greater than 0.
+        </div>`;
+        return;
+    }
+
+    // Triangle inequality
+    if (a + b <= c || a + c <= b || b + c <= a) {
+        result.innerHTML = `
+        <div class="result-title">
+            ❌ Not a Valid Triangle
+        </div>
+        <div class="note">
+            The sum of any two sides must be greater than the third side.
+        </div>`;
+        return;
+    }
+
+    const perimeter = a + b + c;
+
+    const s = perimeter / 2;
+
+    // Heron's formula
+    const area = Math.sqrt(
+        s * (s - a) * (s - b) * (s - c)
+    );
+
+    let type;
+
+    if (a === b && b === c) {
+        type = "Equilateral";
+    }
+    else if (a === b || b === c || a === c) {
+        type = "Isosceles";
+    }
+    else {
+        type = "Scalene";
+    }
+
+    let angleType;
+
+    const sides = [a, b, c].sort((x, y) => x - y);
+
+    const x = sides[0];
+    const y = sides[1];
+    const z = sides[2];
+
+    const difference = (x * x + y * y) - (z * z);
+
+    if (Math.abs(difference) < 0.000001) {
+        angleType = "Right";
+    }
+    else if (difference > 0) {
+        angleType = "Acute";
+    }
+    else {
+        angleType = "Obtuse";
+    }
+
+    result.innerHTML = `
+    <div class="result-title">📐 Triangle Result</div>
+
+    <div class="result-row">
+        <span class="result-label">Area:</span>
+        <span class="result-value">${area.toFixed(2)}</span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Perimeter:</span>
+        <span class="result-value">${perimeter.toFixed(2)}</span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Triangle Type:</span>
+        <span class="result-value">${type}</span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Angle Type:</span>
+        <span class="result-value">${angleType}</span>
+    </div>
+
+    <div class="note">
+        Area is calculated using Heron's formula.
+    </div>`;
+}
+
+function resetTriangle() {
+
+    document.getElementById("sideA").value = "";
+    document.getElementById("sideB").value = "";
+    document.getElementById("sideC").value = "";
+
+    document.getElementById("result").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>

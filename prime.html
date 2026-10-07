@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NumeriXa – Prime & Factor Calculator</title>
+
+<style>
+.calculator {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255,255,255,.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    background: rgba(255,255,255,.9);
+    color: #222;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,.2);
+    color: white;
+    font-weight: bold;
+    transition: .3s ease;
+}
+
+button:hover {
+    background: #00ffd5;
+    color: black;
+}
+
+.result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    color: #00ffd5;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    text-align: left;
+    word-break: break-word;
+}
+
+.result-title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.result-label {
+    color: #ddd;
+}
+
+.result-value {
+    font-weight: bold;
+    color: #00ffd5;
+    text-align: right;
+}
+
+.note {
+    margin-top: 10px;
+    text-align: center;
+    font-size: .82rem;
+    color: #ccc;
+}
+
+@media(max-width:500px) {
+    .calculator {
+        max-width: 100%;
+        padding: 18px;
+    }
+
+    .dashboard-heading {
+        font-size: 2.2rem;
+    }
+
+    .back-btn {
+        position: static;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .result {
+        font-size: 1rem;
+    }
+}
+</style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">NumeriXa</h1>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+<div class="calculator">
+
+<h2>🔢 Prime & Factors</h2>
+
+<p style="color:#ddd;">
+Check prime number and find factors
+</p>
+
+<input
+    type="number"
+    id="number"
+    placeholder="Enter a positive integer"
+    min="1"
+    step="1"
+>
+
+<button onclick="calculatePrime()">Calculate</button>
+
+<button onclick="resetPrime()">Reset</button>
+
+<div class="result" id="result"></div>
+
+</div>
+</div>
+
+<script>
+
+function calculatePrime() {
+
+    const input = document.getElementById("number").value;
+    const result = document.getElementById("result");
+
+    if (input === "") {
+        result.innerHTML = `
+        <div class="result-title">
+            Please enter a number.
+        </div>`;
+        return;
+    }
+
+    const number = Number(input);
+
+    if (!Number.isInteger(number) || number < 1) {
+        result.innerHTML = `
+        <div class="result-title">
+            ❌ Invalid Number
+        </div>
+        <div class="note">
+            Please enter a positive integer.
+        </div>`;
+        return;
+    }
+
+    let isPrime = true;
+
+    if (number === 1) {
+        isPrime = false;
+    } else {
+        for (let i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i === 0) {
+                isPrime = false;
+                break;
+            }
+        }
+    }
+
+    const factors = [];
+
+    for (let i = 1; i <= Math.sqrt(number); i++) {
+
+        if (number % i === 0) {
+
+            factors.push(i);
+
+            if (i !== number / i) {
+                factors.push(number / i);
+            }
+        }
+    }
+
+    factors.sort((a, b) => a - b);
+
+    let primeFactors = [];
+    let temp = number;
+
+    for (let i = 2; i <= temp; i++) {
+
+        while (temp % i === 0) {
+            primeFactors.push(i);
+            temp = temp / i;
+        }
+    }
+
+    result.innerHTML = `
+    <div class="result-title">🔢 Number Result</div>
+
+    <div class="result-row">
+        <span class="result-label">Number:</span>
+        <span class="result-value">${number}</span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Prime:</span>
+        <span class="result-value">
+            ${isPrime ? "Yes" : "No"}
+        </span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Factors:</span>
+        <span class="result-value">
+            ${factors.join(", ")}
+        </span>
+    </div>
+
+    <div class="result-row">
+        <span class="result-label">Prime Factors:</span>
+        <span class="result-value">
+            ${primeFactors.join(" × ")}
+        </span>
+    </div>
+
+    <div class="note">
+        Factors are all positive factors of the entered number.
+    </div>`;
+}
+
+function resetPrime() {
+
+    document.getElementById("number").value = "";
+
+    document.getElementById("result").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>

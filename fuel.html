@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Fuel Cost Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>⛽ Fuel Cost Calculator</h2>
+
+            <input
+                type="number"
+                id="distance"
+                placeholder="Distance (km)"
+                min="0"
+                step="0.1"
+            >
+
+            <input
+                type="number"
+                id="mileage"
+                placeholder="Vehicle Mileage (km/L)"
+                min="0.1"
+                step="0.1"
+            >
+
+            <input
+                type="number"
+                id="fuelPrice"
+                placeholder="Fuel Price (₹/L)"
+                min="0"
+                step="0.01"
+            >
+
+            <button onclick="calculateFuel()">
+                Calculate
+            </button>
+
+            <button onclick="resetFuel()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function calculateFuel() {
+
+            const distance =
+                parseFloat(document.getElementById("distance").value);
+
+            const mileage =
+                parseFloat(document.getElementById("mileage").value);
+
+            const fuelPrice =
+                parseFloat(document.getElementById("fuelPrice").value);
+
+            const result =
+                document.getElementById("result");
+
+            if (
+                isNaN(distance) ||
+                distance <= 0 ||
+                isNaN(mileage) ||
+                mileage <= 0 ||
+                isNaN(fuelPrice) ||
+                fuelPrice < 0
+            ) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter valid values.
+                    </div>
+                `;
+
+                return;
+            }
+
+            // Fuel required
+
+            const fuelUsed =
+                distance / mileage;
+
+            // Total cost
+
+            const totalCost =
+                fuelUsed * fuelPrice;
+
+            // Cost per kilometre
+
+            const costPerKm =
+                totalCost / distance;
+
+            result.innerHTML = `
+
+                <div class="result-title">
+                    ⛽ Fuel Cost Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Distance:
+                    </span>
+
+                    <span class="result-value">
+                        ${distance.toFixed(2)} km
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Fuel Required:
+                    </span>
+
+                    <span class="result-value">
+                        ${fuelUsed.toFixed(2)} L
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Fuel Price:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${fuelPrice.toFixed(2)}/L
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Total Cost:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${totalCost.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Cost / KM:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${costPerKm.toFixed(2)}
+                    </span>
+                </div>
+
+            `;
+        }
+
+        function resetFuel() {
+
+            document.getElementById("distance").value = "";
+
+            document.getElementById("mileage").value = "";
+
+            document.getElementById("fuelPrice").value = "";
+
+            document.getElementById("result").innerHTML = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

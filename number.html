@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Number System Converter</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+            word-break: break-all;
+        }
+
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #ccc;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>🔢 Number System Converter</h2>
+
+            <select id="numberSystem">
+
+                <option value="10">
+                    Decimal
+                </option>
+
+                <option value="2">
+                    Binary
+                </option>
+
+                <option value="8">
+                    Octal
+                </option>
+
+                <option value="16">
+                    Hexadecimal
+                </option>
+
+            </select>
+
+            <input
+                type="text"
+                id="number"
+                placeholder="Enter Number"
+            >
+
+            <button onclick="convertNumber()">
+                Convert
+            </button>
+
+            <button onclick="resetNumber()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function convertNumber() {
+
+            const input =
+                document.getElementById("number").value.trim();
+
+            const base =
+                parseInt(document.getElementById("numberSystem").value);
+
+            const result =
+                document.getElementById("result");
+
+            if (input === "") {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter a number.
+                    </div>
+                `;
+
+                return;
+            }
+
+            // Convert input to decimal
+
+            const decimal = parseInt(input, base);
+
+            if (isNaN(decimal)) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Invalid number for selected system.
+                    </div>
+
+                    <div class="note">
+                        Check the number and selected number system.
+                    </div>
+                `;
+
+                return;
+            }
+
+            // Convert decimal to other systems
+
+            const binary =
+                decimal.toString(2);
+
+            const octal =
+                decimal.toString(8);
+
+            const hexadecimal =
+                decimal.toString(16).toUpperCase();
+
+            result.innerHTML = `
+
+                <div class="result-title">
+                    🔢 Conversion Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Decimal:
+                    </span>
+
+                    <span class="result-value">
+                        ${decimal}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Binary:
+                    </span>
+
+                    <span class="result-value">
+                        ${binary}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Octal:
+                    </span>
+
+                    <span class="result-value">
+                        ${octal}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Hexadecimal:
+                    </span>
+
+                    <span class="result-value">
+                        ${hexadecimal}
+                    </span>
+                </div>
+
+            `;
+        }
+
+        function resetNumber() {
+
+            document.getElementById("number").value = "";
+
+            document.getElementById("numberSystem").value = "10";
+
+            document.getElementById("result").innerHTML = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

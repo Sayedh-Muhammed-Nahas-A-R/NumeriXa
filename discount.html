@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Discount Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>💰 Discount Calculator</h2>
+
+            <input
+                type="number"
+                id="price"
+                placeholder="Original Price"
+                min="0"
+                step="0.01"
+            >
+
+            <input
+                type="number"
+                id="discount"
+                placeholder="Discount (%)"
+                min="0"
+                max="100"
+                step="0.01"
+            >
+
+            <button onclick="calculateDiscount()">
+                Calculate
+            </button>
+
+            <button onclick="resetDiscount()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function calculateDiscount() {
+
+            const price =
+                parseFloat(document.getElementById("price").value);
+
+            const discount =
+                parseFloat(document.getElementById("discount").value);
+
+            const result =
+                document.getElementById("result");
+
+            if (
+                isNaN(price) ||
+                price < 0 ||
+                isNaN(discount) ||
+                discount < 0 ||
+                discount > 100
+            ) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter valid values.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const discountAmount =
+                price * discount / 100;
+
+            const finalPrice =
+                price - discountAmount;
+
+            result.innerHTML = `
+
+                <div class="result-title">
+                    🏷️ Discount Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Original Price:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${price.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Discount:
+                    </span>
+
+                    <span class="result-value">
+                        ${discount.toFixed(2)}%
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        You Save:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${discountAmount.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Final Price:
+                    </span>
+
+                    <span class="result-value">
+                        ₹${finalPrice.toFixed(2)}
+                    </span>
+                </div>
+
+            `;
+        }
+
+        function resetDiscount() {
+
+            document.getElementById("price").value = "";
+
+            document.getElementById("discount").value = "";
+
+            document.getElementById("result").innerHTML = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

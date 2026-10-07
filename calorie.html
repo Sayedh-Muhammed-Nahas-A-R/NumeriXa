@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Calorie Needs Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            color: #ccc;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>🔥 Calorie Needs Calculator</h2>
+
+            <select id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <input
+                type="number"
+                id="age"
+                placeholder="Age (years)"
+                min="1"
+                max="120"
+            >
+
+            <input
+                type="number"
+                id="weight"
+                placeholder="Weight (kg)"
+                min="1"
+                step="0.1"
+            >
+
+            <input
+                type="number"
+                id="height"
+                placeholder="Height (cm)"
+                min="1"
+                step="0.1"
+            >
+
+            <select id="activity">
+
+                <option value="1.2">
+                    Sedentary - Little Exercise
+                </option>
+
+                <option value="1.375">
+                    Light Activity - 1 to 3 Days
+                </option>
+
+                <option value="1.55">
+                    Moderate Activity - 3 to 5 Days
+                </option>
+
+                <option value="1.725">
+                    High Activity - 6 to 7 Days
+                </option>
+
+                <option value="1.9">
+                    Very High Activity
+                </option>
+
+            </select>
+
+            <button onclick="calculateCalories()">
+                Calculate
+            </button>
+
+            <button onclick="resetCalories()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function calculateCalories() {
+
+            const gender =
+                document.getElementById("gender").value;
+
+            const age =
+                parseFloat(document.getElementById("age").value);
+
+            const weight =
+                parseFloat(document.getElementById("weight").value);
+
+            const height =
+                parseFloat(document.getElementById("height").value);
+
+            const activity =
+                parseFloat(document.getElementById("activity").value);
+
+            const result =
+                document.getElementById("result");
+
+            // Validate input
+
+            if (
+                !age ||
+                age <= 0 ||
+                !weight ||
+                weight <= 0 ||
+                !height ||
+                height <= 0
+            ) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter valid details.
+                    </div>
+                `;
+
+                return;
+            }
+
+            // BMR calculation
+            // Mifflin-St Jeor Equation
+
+            let bmr;
+
+            if (gender === "male") {
+
+                bmr =
+                    (10 * weight) +
+                    (6.25 * height) -
+                    (5 * age) +
+                    5;
+
+            } else {
+
+                bmr =
+                    (10 * weight) +
+                    (6.25 * height) -
+                    (5 * age) -
+                    161;
+
+            }
+
+            // Daily calorie requirement
+
+            const calories =
+                bmr * activity;
+
+            result.innerHTML = `
+
+                <div class="result-title">
+                    🔥 Daily Calorie Requirement
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        BMR:
+                    </span>
+
+                    <span class="result-value">
+                        ${Math.round(bmr)} kcal
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Daily Calories:
+                    </span>
+
+                    <span class="result-value">
+                        ${Math.round(calories)} kcal
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Calories / Day:
+                    </span>
+
+                    <span class="result-value">
+                        ${Math.round(calories)} kcal
+                    </span>
+                </div>
+
+                <div class="note">
+                    This is an estimated daily calorie requirement
+                    based on the information entered.
+                </div>
+
+            `;
+        }
+
+        function resetCalories() {
+
+            document.getElementById("gender").value = "male";
+
+            document.getElementById("age").value = "";
+
+            document.getElementById("weight").value = "";
+
+            document.getElementById("height").value = "";
+
+            document.getElementById("activity").value = "1.2";
+
+            document.getElementById("result").innerHTML = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

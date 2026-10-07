@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Investment Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 16px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 213, 0.3);
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            color: #00ffd5;
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 8px 0;
+            color: white;
+        }
+
+        .result-value {
+            color: #00ffd5;
+            font-weight: bold;
+        }
+
+        .total {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 500px) {
+
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .result-row {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>📈 Investment Calculator</h2>
+
+            <input
+                type="number"
+                id="initial"
+                placeholder="Initial Investment (₹)"
+                min="0"
+                step="0.01"
+            >
+
+            <input
+                type="number"
+                id="monthly"
+                placeholder="Monthly Investment (₹)"
+                min="0"
+                step="0.01"
+            >
+
+            <input
+                type="number"
+                id="years"
+                placeholder="Investment Period (Years)"
+                min="1"
+                step="1"
+            >
+
+            <input
+                type="number"
+                id="rate"
+                placeholder="Expected Annual Return (%)"
+                min="0"
+                step="0.1"
+            >
+
+            <button onclick="calculateInvestment()">
+                Calculate
+            </button>
+
+            <button onclick="resetInvestment()">
+                Reset
+            </button>
+
+            <div class="result" id="result">
+                <div class="result-title">
+                    Investment Result
+                </div>
+
+                <div class="result-row">
+                    <span>Total Invested</span>
+                    <span class="result-value">₹0</span>
+                </div>
+
+                <div class="result-row">
+                    <span>Estimated Returns</span>
+                    <span class="result-value">₹0</span>
+                </div>
+
+                <div class="result-row total">
+                    <span>Final Value</span>
+                    <span class="result-value">₹0</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function calculateInvestment() {
+
+            const initial = parseFloat(
+                document.getElementById("initial").value
+            );
+
+            const monthly = parseFloat(
+                document.getElementById("monthly").value
+            );
+
+            const years = parseFloat(
+                document.getElementById("years").value
+            );
+
+            const rate = parseFloat(
+                document.getElementById("rate").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (
+                isNaN(initial) ||
+                isNaN(monthly) ||
+                isNaN(years) ||
+                isNaN(rate) ||
+                initial < 0 ||
+                monthly < 0 ||
+                years <= 0 ||
+                rate < 0
+            ) {
+
+                result.innerHTML = `
+                    <div class="result-title">
+                        Please enter valid values.
+                    </div>
+                `;
+
+                return;
+            }
+
+            // Convert annual rate to monthly rate
+            const monthlyRate = rate / 100 / 12;
+
+            const months = years * 12;
+
+            // Future value of initial investment
+            const initialFutureValue =
+                initial * Math.pow(
+                    1 + monthlyRate,
+                    months
+                );
+
+            // Future value of monthly investments
+            let monthlyFutureValue = 0;
+
+            if (monthlyRate === 0) {
+
+                monthlyFutureValue =
+                    monthly * months;
+
+            } else {
+
+                monthlyFutureValue =
+                    monthly *
+                    (
+                        (Math.pow(
+                            1 + monthlyRate,
+                            months
+                        ) - 1) /
+                        monthlyRate
+                    );
+            }
+
+            // Final investment value
+            const finalValue =
+                initialFutureValue +
+                monthlyFutureValue;
+
+            // Total amount invested
+            const totalInvested =
+                initial +
+                (monthly * months);
+
+            // Estimated returns
+            const estimatedReturns =
+                finalValue -
+                totalInvested;
+
+            result.innerHTML = `
+                <div class="result-title">
+                    📊 Investment Result
+                </div>
+
+                <div class="result-row">
+                    <span>Total Invested</span>
+                    <span class="result-value">
+                        ₹${totalInvested.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span>Estimated Returns</span>
+                    <span class="result-value">
+                        ₹${estimatedReturns.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="result-row total">
+                    <span>Final Value</span>
+                    <span class="result-value">
+                        ₹${finalValue.toFixed(2)}
+                    </span>
+                </div>
+
+                <div class="note">
+                    This is an estimated calculation based on
+                    the expected annual return entered.
+                    Actual investment returns may vary.
+                </div>
+            `;
+        }
+
+        function resetInvestment() {
+
+            document.getElementById("initial").value = "";
+
+            document.getElementById("monthly").value = "";
+
+            document.getElementById("years").value = "";
+
+            document.getElementById("rate").value = "";
+
+            document.getElementById("result").innerHTML = `
+                <div class="result-title">
+                    Investment Result
+                </div>
+
+                <div class="result-row">
+                    <span>Total Invested</span>
+                    <span class="result-value">₹0</span>
+                </div>
+
+                <div class="result-row">
+                    <span>Estimated Returns</span>
+                    <span class="result-value">₹0</span>
+                </div>
+
+                <div class="result-row total">
+                    <span>Final Value</span>
+                    <span class="result-value">₹0</span>
+                </div>
+            `;
+        }
+
+    </script>
+
+</body>
+
+</html>

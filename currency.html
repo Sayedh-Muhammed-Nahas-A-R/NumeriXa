@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<meta name="theme-color" content="#07141b">
+
+<title>NumeriXa – Currency Converter</title>
+
+<link rel="stylesheet" href="theme.css">
+
+<style>
+
+.calculator {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255,255,255,.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    background: rgba(255,255,255,.2);
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+}
+
+select option {
+    background: #203a43;
+    color: white;
+}
+
+.swap-btn {
+    width: 50px;
+    height: 50px;
+    margin: 8px auto;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.swap-btn:hover {
+    background: #00ffd5;
+    color: black;
+    transform: rotate(180deg);
+}
+
+button.action {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,.2);
+    color: white;
+    font-weight: bold;
+}
+
+button.action:hover {
+    background: #00ffd5;
+    color: black;
+}
+
+.result {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(0,255,213,.3);
+}
+
+.small {
+    color: #b7dbe5;
+    font-size: .95rem;
+}
+
+.big {
+    color: #00ffd5;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-top: 8px;
+    word-break: break-word;
+}
+
+.status {
+    color: #9fd;
+    font-size: .85rem;
+    margin-top: 8px;
+}
+
+@media(max-width:500px) {
+
+    .calculator {
+        max-width: 100%;
+        padding: 18px;
+    }
+
+    .dashboard-heading {
+        font-size: 2.2rem;
+    }
+
+    .back-btn {
+        position: static;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div>
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">
+        Back to Dashboard
+    </a>
+
+    <div class="calculator">
+
+        <h2>💱 Currency Converter</h2>
+
+        <p style="color:#ddd;">
+            Convert between world currencies
+        </p>
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="Enter amount"
+            min="0"
+            step="any"
+            oninput="convertCurrency()"
+        >
+
+        <select id="from" onchange="convertCurrency()">
+            <option value="">Loading currencies...</option>
+        </select>
+
+        <button class="swap-btn" onclick="swapCurrency()">
+            ⇅
+        </button>
+
+        <select id="to" onchange="convertCurrency()">
+            <option value="">Loading currencies...</option>
+        </select>
+
+        <button class="action" onclick="resetCurrency()">
+            Reset
+        </button>
+
+        <div class="result">
+
+            <div class="small" id="preview">
+                Enter an amount
+            </div>
+
+            <div class="big" id="result">
+                —
+            </div>
+
+        </div>
+
+        <div class="status" id="status">
+            Loading world currencies...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   NumeriXa Currency Converter
+   World Currency Support
+   ========================================= */
+
+let rates = {};
+
+
+/* =========================================
+   Currency Names and Flags
+   ========================================= */
+
+const currencyInfo = {
+
+    AED: ["🇦🇪", "UAE Dirham"],
+    AFN: ["🇦🇫", "Afghan Afghani"],
+    ALL: ["🇦🇱", "Albanian Lek"],
+    AMD: ["🇦🇲", "Armenian Dram"],
+    ANG: ["🇨🇼", "Netherlands Antillean Guilder"],
+    AOA: ["🇦🇴", "Angolan Kwanza"],
+    ARS: ["🇦🇷", "Argentine Peso"],
+    AUD: ["🇦🇺", "Australian Dollar"],
+    AWG: ["🇦🇼", "Aruban Florin"],
+    AZN: ["🇦🇿", "Azerbaijani Manat"],
+
+    BAM: ["🇧🇦", "Bosnia-Herzegovina Convertible Mark"],
+    BBD: ["🇧🇧", "Barbadian Dollar"],
+    BDT: ["🇧🇩", "Bangladeshi Taka"],
+    BGN: ["🇧🇬", "Bulgarian Lev"],
+    BHD: ["🇧🇭", "Bahraini Dinar"],
+    BIF: ["🇧🇮", "Burundian Franc"],
+    BMD: ["🇧🇲", "Bermudian Dollar"],
+    BND: ["🇧🇳", "Brunei Dollar"],
+    BOB: ["🇧🇴", "Bolivian Boliviano"],
+    BRL: ["🇧🇷", "Brazilian Real"],
+    BSD: ["🇧🇸", "Bahamian Dollar"],
+    BTN: ["🇧🇹", "Bhutanese Ngultrum"],
+    BWP: ["🇧🇼", "Botswana Pula"],
+    BYN: ["🇧🇾", "Belarusian Ruble"],
+    BZD: ["🇧🇿", "Belize Dollar"],
+
+    CAD: ["🇨🇦", "Canadian Dollar"],
+    CDF: ["🇨🇩", "Congolese Franc"],
+    CHF: ["🇨🇭", "Swiss Franc"],
+    CLP: ["🇨🇱", "Chilean Peso"],
+    CNY: ["🇨🇳", "Chinese Yuan"],
+    COP: ["🇨🇴", "Colombian Peso"],
+    CRC: ["🇨🇷", "Costa Rican Colón"],
+    CUP: ["🇨🇺", "Cuban Peso"],
+    CVE: ["🇨🇻", "Cape Verdean Escudo"],
+    CZK: ["🇨🇿", "Czech Koruna"],
+
+    DJF: ["🇩🇯", "Djiboutian Franc"],
+    DKK: ["🇩🇰", "Danish Krone"],
+    DOP: ["🇩🇴", "Dominican Peso"],
+    DZD: ["🇩🇿", "Algerian Dinar"],
+
+    EGP: ["🇪🇬", "Egyptian Pound"],
+    ERN: ["🇪🇷", "Eritrean Nakfa"],
+    ETB: ["🇪🇹", "Ethiopian Birr"],
+    EUR: ["🇪🇺", "Euro"],
+
+    FJD: ["🇫🇯", "Fijian Dollar"],
+    FKP: ["🇫🇰", "Falkland Islands Pound"],
+
+    GBP: ["🇬🇧", "British Pound Sterling"],
+    GEL: ["🇬🇪", "Georgian Lari"],
+    GHS: ["🇬🇭", "Ghanaian Cedi"],
+    GIP: ["🇬🇮", "Gibraltar Pound"],
+    GMD: ["🇬🇲", "Gambian Dalasi"],
+    GNF: ["🇬🇳", "Guinean Franc"],
+    GTQ: ["🇬🇹", "Guatemalan Quetzal"],
+    GYD: ["🇬🇾", "Guyanese Dollar"],
+
+    HKD: ["🇭🇰", "Hong Kong Dollar"],
+    HNL: ["🇭🇳", "Honduran Lempira"],
+    HTG: ["🇭🇹", "Haitian Gourde"],
+    HUF: ["🇭🇺", "Hungarian Forint"],
+
+    IDR: ["🇮🇩", "Indonesian Rupiah"],
+    ILS: ["🇮🇱", "Israeli New Shekel"],
+    INR: ["🇮🇳", "Indian Rupee"],
+    IQD: ["🇮🇶", "Iraqi Dinar"],
+    IRR: ["🇮🇷", "Iranian Rial"],
+    ISK: ["🇮🇸", "Icelandic Króna"],
+
+    JMD: ["🇯🇲", "Jamaican Dollar"],
+    JOD: ["🇯🇴", "Jordanian Dinar"],
+    JPY: ["🇯🇵", "Japanese Yen"],
+
+    KES: ["🇰🇪", "Kenyan Shilling"],
+    KGS: ["🇰🇬", "Kyrgyzstani Som"],
+    KHR: ["🇰🇭", "Cambodian Riel"],
+    KMF: ["🇰🇲", "Comorian Franc"],
+    KPW: ["🇰🇵", "North Korean Won"],
+    KRW: ["🇰🇷", "South Korean Won"],
+    KWD: ["🇰🇼", "Kuwaiti Dinar"],
+    KYD: ["🇰🇾", "Cayman Islands Dollar"],
+    KZT: ["🇰🇿", "Kazakhstani Tenge"],
+
+    LAK: ["🇱🇦", "Lao Kip"],
+    LBP: ["🇱🇧", "Lebanese Pound"],
+    LKR: ["🇱🇰", "Sri Lankan Rupee"],
+    LRD: ["🇱🇷", "Liberian Dollar"],
+    LSL: ["🇱🇸", "Lesotho Loti"],
+    LYD: ["🇱🇾", "Libyan Dinar"],
+
+    MAD: ["🇲🇦", "Moroccan Dirham"],
+    MDL: ["🇲🇩", "Moldovan Leu"],
+    MGA: ["🇲🇬", "Malagasy Ariary"],
+    MKD: ["🇲🇰", "Macedonian Denar"],
+    MMK: ["🇲🇲", "Myanmar Kyat"],
+    MNT: ["🇲🇳", "Mongolian Tögrög"],
+    MOP: ["🇲🇴", "Macanese Pataca"],
+    MRU: ["🇲🇷", "Mauritanian Ouguiya"],
+    MUR: ["🇲🇺", "Mauritian Rupee"],
+    MVR: ["🇲🇻", "Maldivian Rufiyaa"],
+    MWK: ["🇲🇼", "Malawian Kwacha"],
+    MXN: ["🇲🇽", "Mexican Peso"],
+    MYR: ["🇲🇾", "Malaysian Ringgit"],
+    MZN: ["🇲🇿", "Mozambican Metical"],
+
+    NAD: ["🇳🇦", "Namibian Dollar"],
+    NGN: ["🇳🇬", "Nigerian Naira"],
+    NIO: ["🇳🇮", "Nicaraguan Córdoba"],
+    NOK: ["🇳🇴", "Norwegian Krone"],
+    NPR: ["🇳🇵", "Nepalese Rupee"],
+    NZD: ["🇳🇿", "New Zealand Dollar"],
+
+    OMR: ["🇴🇲", "Omani Rial"],
+
+    PAB: ["🇵🇦", "Panamanian Balboa"],
+    PEN: ["🇵🇪", "Peruvian Sol"],
+    PGK: ["🇵🇬", "Papua New Guinean Kina"],
+    PHP: ["🇵🇭", "Philippine Peso"],
+    PKR: ["🇵🇰", "Pakistani Rupee"],
+    PLN: ["🇵🇱", "Polish Złoty"],
+    PYG: ["🇵🇾", "Paraguayan Guaraní"],
+
+    QAR: ["🇶🇦", "Qatari Riyal"],
+
+    RON: ["🇷🇴", "Romanian Leu"],
+    RSD: ["🇷🇸", "Serbian Dinar"],
+    RUB: ["🇷🇺", "Russian Ruble"],
+    RWF: ["🇷🇼", "Rwandan Franc"],
+
+    SAR: ["🇸🇦", "Saudi Riyal"],
+    SBD: ["🇸🇧", "Solomon Islands Dollar"],
+    SCR: ["🇸🇨", "Seychellois Rupee"],
+    SDG: ["🇸🇩", "Sudanese Pound"],
+    SEK: ["🇸🇪", "Swedish Krona"],
+    SGD: ["🇸🇬", "Singapore Dollar"],
+    SHP: ["🇸🇭", "Saint Helena Pound"],
+    SLE: ["🇸🇱", "Sierra Leonean Leone"],
+    SOS: ["🇸🇴", "Somali Shilling"],
+    SRD: ["🇸🇷", "Surinamese Dollar"],
+    SSP: ["🇸🇸", "South Sudanese Pound"],
+    STN: ["🇸🇹", "São Tomé and Príncipe Dobra"],
+    SYP: ["🇸🇾", "Syrian Pound"],
+
+    SZL: ["🇸🇿", "Swazi Lilangeni"],
+
+    THB: ["🇹🇭", "Thai Baht"],
+    TJS: ["🇹🇯", "Tajikistani Somoni"],
+    TMT: ["🇹🇲", "Turkmenistani Manat"],
+    TND: ["🇹🇳", "Tunisian Dinar"],
+    TOP: ["🇹🇴", "Tongan Paʻanga"],
+    TRY: ["🇹🇷", "Turkish Lira"],
+    TTD: ["🇹🇹", "Trinidad and Tobago Dollar"],
+    TWD: ["🇹🇼", "New Taiwan Dollar"],
+    TZS: ["🇹🇿", "Tanzanian Shilling"],
+
+    UAH: ["🇺🇦", "Ukrainian Hryvnia"],
+    UGX: ["🇺🇬", "Ugandan Shilling"],
+    USD: ["🇺🇸", "US Dollar"],
+    UYU: ["🇺🇾", "Uruguayan Peso"],
+    UZS: ["🇺🇿", "Uzbekistani Som"],
+
+    VES: ["🇻🇪", "Venezuelan Bolívar"],
+    VND: ["🇻🇳", "Vietnamese Đồng"],
+    VUV: ["🇻🇺", "Vanuatu Vatu"],
+
+    WST: ["🇼🇸", "Samoan Tala"],
+
+    XAF: ["🌍", "Central African CFA Franc"],
+    XCD: ["🌴", "East Caribbean Dollar"],
+    XOF: ["🌍", "West African CFA Franc"],
+    XPF: ["🇵🇫", "CFP Franc"],
+
+    YER: ["🇾🇪", "Yemeni Rial"],
+
+    ZAR: ["🇿🇦", "South African Rand"],
+    ZMW: ["🇿🇲", "Zambian Kwacha"],
+    ZWL: ["🇿🇼", "Zimbabwean Dollar"]
+
+};
+
+
+/* =========================================
+   Load Exchange Rates
+   ========================================= */
+
+async function loadRates() {
+
+    try {
+
+        const response =
+            await fetch("https://open.er-api.com/v6/latest/USD");
+
+        const data = await response.json();
+
+        if (!data.rates) {
+            throw new Error("Rates unavailable");
+        }
+
+        rates = data.rates;
+
+        loadCurrencyOptions();
+
+        document.getElementById("status").innerHTML =
+            `Live exchange rates loaded • ${Object.keys(rates).length} currencies`;
+
+        convertCurrency();
+
+    }
+
+    catch (error) {
+
+        document.getElementById("status").innerHTML =
+            "❌ Unable to load live exchange rates";
+
+    }
+
+}
+
+
+/* =========================================
+   Create Currency Dropdowns
+   ========================================= */
+
+function loadCurrencyOptions() {
+
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+
+    from.innerHTML = "";
+    to.innerHTML = "";
+
+    const currencies = Object.keys(rates).sort();
+
+    currencies.forEach(code => {
+
+        const info = currencyInfo[code];
+
+        let flag = "💱";
+        let name = code;
+
+        if (info) {
+
+            flag = info[0];
+            name = info[1];
+
+        }
+
+        const text =
+            `${flag} ${name} (${code})`;
+
+        const option1 =
+            document.createElement("option");
+
+        option1.value = code;
+        option1.textContent = text;
+
+        const option2 =
+            document.createElement("option");
+
+        option2.value = code;
+        option2.textContent = text;
+
+        from.appendChild(option1);
+        to.appendChild(option2);
+
+    });
+
+
+    /* Default currencies */
+
+    from.value = "INR";
+    to.value = "USD";
+
+}
+
+
+/* =========================================
+   Currency Conversion
+   ========================================= */
+
+function convertCurrency() {
+
+    const amount =
+        parseFloat(document.getElementById("amount").value);
+
+    const result =
+        document.getElementById("result");
+
+    const preview =
+        document.getElementById("preview");
+
+
+    if (
+        isNaN(amount) ||
+        amount < 0 ||
+        !rates.USD
+    ) {
+
+        preview.innerHTML =
+            "Enter an amount";
+
+        result.innerHTML =
+            "—";
+
+        return;
+
+    }
+
+
+    const from =
+        document.getElementById("from").value;
+
+    const to =
+        document.getElementById("to").value;
+
+
+    if (!rates[from] || !rates[to]) {
+
+        result.innerHTML =
+            "Rate unavailable";
+
+        return;
+
+    }
+
+
+    /* Convert source currency → USD */
+
+    const usd =
+        amount / rates[from];
+
+
+    /* Convert USD → target currency */
+
+    const converted =
+        usd * rates[to];
+
+
+    const fromOption =
+        document.getElementById("from")
+        .options[
+            document.getElementById("from").selectedIndex
+        ];
+
+
+    const toOption =
+        document.getElementById("to")
+        .options[
+            document.getElementById("to").selectedIndex
+        ];
+
+
+    preview.innerHTML =
+        `${amount} ${fromOption.text}`;
+
+
+    result.innerHTML =
+        `${formatNumber(converted)} ${toOption.text}`;
+
+}
+
+
+/* =========================================
+   Number Formatting
+   ========================================= */
+
+function formatNumber(number) {
+
+    return new Intl.NumberFormat(
+        "en-US",
+        {
+            maximumFractionDigits: 6
+        }
+    ).format(number);
+
+}
+
+
+/* =========================================
+   Swap Currencies
+   ========================================= */
+
+function swapCurrency() {
+
+    const from =
+        document.getElementById("from");
+
+    const to =
+        document.getElementById("to");
+
+
+    const temp =
+        from.value;
+
+    from.value =
+        to.value;
+
+    to.value =
+        temp;
+
+
+    convertCurrency();
+
+}
+
+
+/* =========================================
+   Reset
+   ========================================= */
+
+function resetCurrency() {
+
+    document.getElementById("amount").value = "";
+
+    document.getElementById("from").value = "INR";
+
+    document.getElementById("to").value = "USD";
+
+    document.getElementById("preview").innerHTML =
+        "Enter an amount";
+
+    document.getElementById("result").innerHTML =
+        "—";
+
+}
+
+
+/* =========================================
+   Start
+   ========================================= */
+
+loadRates();
+
+</script>
+
+</body>
+</html>

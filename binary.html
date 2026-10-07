@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NumeriXa – Binary Calculator</title>
+
+<link rel="stylesheet" href="theme.css">
+
+<style>
+.calculator {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255,255,255,.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    background: rgba(255,255,255,.9);
+    color: #222;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,.2);
+    color: white;
+    font-weight: bold;
+    transition: .3s ease;
+}
+
+button:hover {
+    background: #00ffd5;
+    color: black;
+}
+
+.result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    color: #00ffd5;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    text-align: left;
+    word-break: break-word;
+}
+
+.result-title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.result-label {
+    color: #ddd;
+}
+
+.result-value {
+    font-weight: bold;
+    color: #00ffd5;
+    text-align: right;
+}
+
+.note {
+    margin-top: 10px;
+    text-align: center;
+    font-size: .82rem;
+    color: #ccc;
+}
+
+@media(max-width:500px) {
+
+    .calculator {
+        max-width: 100%;
+        padding: 18px;
+    }
+
+    .dashboard-heading {
+        font-size: 2.2rem;
+    }
+
+    .back-btn {
+        position: static;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .result {
+        font-size: 1rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div>
+
+<h1 class="dashboard-heading">NumeriXa</h1>
+
+<a href="dashboard.html" class="back-btn">
+    Back to Dashboard
+</a>
+
+<div class="calculator">
+
+<h2>🔢 Binary Calculator</h2>
+
+<p style="color:#ddd;">
+    Perform calculations using binary numbers
+</p>
+
+<input
+    type="text"
+    id="number1"
+    placeholder="Enter first binary number"
+    inputmode="numeric"
+    oninput="this.value = this.value.replace(/[^01]/g, '')"
+>
+
+<select id="operation">
+    <option value="add">Addition (+)</option>
+    <option value="subtract">Subtraction (-)</option>
+    <option value="multiply">Multiplication (×)</option>
+    <option value="divide">Division (÷)</option>
+</select>
+
+<input
+    type="text"
+    id="number2"
+    placeholder="Enter second binary number"
+    inputmode="numeric"
+    oninput="this.value = this.value.replace(/[^01]/g, '')"
+>
+
+<button onclick="calculateBinary()">
+    Calculate
+</button>
+
+<button onclick="resetBinary()">
+    Reset
+</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function calculateBinary() {
+
+    const input1 = document.getElementById("number1").value.trim();
+    const input2 = document.getElementById("number2").value.trim();
+
+    const operation = document.getElementById("operation").value;
+
+    const result = document.getElementById("result");
+
+    /* Check empty input */
+
+    if (input1 === "" || input2 === "") {
+
+        result.innerHTML = `
+            <div class="result-title">
+                Please enter both binary numbers.
+            </div>
+        `;
+
+        return;
+    }
+
+    /* Check binary numbers */
+
+    if (!/^[01]+$/.test(input1) || !/^[01]+$/.test(input2)) {
+
+        result.innerHTML = `
+            <div class="result-title">
+                ❌ Invalid Binary Number
+            </div>
+
+            <div class="note">
+                Binary numbers can contain only 0 and 1.
+            </div>
+        `;
+
+        return;
+    }
+
+    /* Convert binary to decimal */
+
+    const num1 = parseInt(input1, 2);
+    const num2 = parseInt(input2, 2);
+
+    let answer;
+
+    /* Addition */
+
+    if (operation === "add") {
+
+        answer = num1 + num2;
+
+    }
+
+    /* Subtraction */
+
+    else if (operation === "subtract") {
+
+        answer = num1 - num2;
+
+    }
+
+    /* Multiplication */
+
+    else if (operation === "multiply") {
+
+        answer = num1 * num2;
+
+    }
+
+    /* Division */
+
+    else if (operation === "divide") {
+
+        if (num2 === 0) {
+
+            result.innerHTML = `
+                <div class="result-title">
+                    ❌ Cannot Divide by Zero
+                </div>
+            `;
+
+            return;
+        }
+
+        answer = Math.floor(num1 / num2);
+    }
+
+    /* Convert result to binary */
+
+    const binaryAnswer = answer.toString(2);
+
+    /* Display result */
+
+    result.innerHTML = `
+        <div class="result-title">
+            🔢 Binary Result
+        </div>
+
+        <div class="result-row">
+            <span class="result-label">
+                Decimal Result:
+            </span>
+
+            <span class="result-value">
+                ${answer}
+            </span>
+        </div>
+
+        <div class="result-row">
+            <span class="result-label">
+                Binary Result:
+            </span>
+
+            <span class="result-value">
+                ${binaryAnswer}
+            </span>
+        </div>
+
+        <div class="note">
+            Division returns the integer quotient.
+        </div>
+    `;
+}
+
+
+/* Reset Calculator */
+
+function resetBinary() {
+
+    document.getElementById("number1").value = "";
+
+    document.getElementById("number2").value = "";
+
+    document.getElementById("operation").value = "add";
+
+    document.getElementById("result").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>

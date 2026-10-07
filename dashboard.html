@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07141b">
+  <meta name="description" content="NumeriXa – 31 free calculators and converters for everyday math, finance, health and study.">
+  <title>NumeriXa – All Calculators</title>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <div class="calculator-dashboard">
+
+    <header class="site-header">
+      <h1 class="dashboard-heading">NumeriXa</h1>
+      <p class="tagline">31 calculators and converters</p>
+      <a href="index.html" class="back-btn">Home</a>
+      <div class="search" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="Search calculators…" aria-label="Search calculators" autocomplete="off">
+      </div>
+    </header>
+
+    <nav class="chips" aria-label="Filter by category">
+        <button class="chip" type="button" aria-pressed="true" data-filter="all">All</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="Everyday">Everyday</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="Finance">Finance</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="Health">Health</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="Math & Study">Math & Study</button>
+    </nav>
+
+    <main id="dashboard">
+      <section class="category" data-cat="Everyday">
+        <h2>Everyday</h2>
+        <div class="calculator-cards">
+        <a class="card" href="normalcalculator.html" data-name="normal calculator basic arithmetic operations">
+          <span class="icon" aria-hidden="true">🧮</span>
+          <h3>Normal Calculator</h3>
+          <p>Basic arithmetic operations</p>
+        </a>
+        <a class="card" href="scientificcalculator.html" data-name="scientific calculator advanced functions, trig, log">
+          <span class="icon" aria-hidden="true">🔬</span>
+          <h3>Scientific Calculator</h3>
+          <p>Advanced functions, trig, log</p>
+        </a>
+        <a class="card" href="percentage.html" data-name="percentage calculator percent, increase & decrease">
+          <span class="icon" aria-hidden="true">％</span>
+          <h3>Percentage Calculator</h3>
+          <p>Percent, increase & decrease</p>
+        </a>
+        <a class="card" href="discount.html" data-name="discount calculate sale price">
+          <span class="icon" aria-hidden="true">🏷️</span>
+          <h3>Discount</h3>
+          <p>Calculate sale price</p>
+        </a>
+        <a class="card" href="time.html" data-name="time calculator time difference & stopwatch">
+          <span class="icon" aria-hidden="true">⏱️</span>
+          <h3>Time Calculator</h3>
+          <p>Time difference & stopwatch</p>
+        </a>
+        <a class="card" href="date.html" data-name="date difference calculate days between dates">
+          <span class="icon" aria-hidden="true">📅</span>
+          <h3>Date Difference</h3>
+          <p>Calculate days between dates</p>
+        </a>
+        <a class="card" href="lifetimeline.html" data-name="life timeline age & birthday details">
+          <span class="icon" aria-hidden="true">🎂</span>
+          <h3>Life Timeline</h3>
+          <p>Age & birthday details</p>
+        </a>
+        <a class="card" href="unit.html" data-name="conversion hub length, weight, temperature & more">
+          <span class="icon" aria-hidden="true">📏</span>
+          <h3>Conversion Hub</h3>
+          <p>Length, weight, temperature & more</p>
+        </a>
+        <a class="card" href="currency.html" data-name="currency live exchange rates">
+          <span class="icon" aria-hidden="true">💱</span>
+          <h3>Currency</h3>
+          <p>Live exchange rates</p>
+        </a>
+        </div>
+      </section>
+      <section class="category" data-cat="Finance">
+        <h2>Finance</h2>
+        <div class="calculator-cards">
+        <a class="card" href="finance.html" data-name="emi calculator emi & loan calculations">
+          <span class="icon" aria-hidden="true">💳</span>
+          <h3>EMI Calculator</h3>
+          <p>EMI & loan calculations</p>
+        </a>
+        <a class="card" href="loan.html" data-name="loan calculator emi • interest • repayment">
+          <span class="icon" aria-hidden="true">🏦</span>
+          <h3>Loan Calculator</h3>
+          <p>EMI • Interest • Repayment</p>
+        </a>
+        <a class="card" href="simpleinterest.html" data-name="simple interest interest & total amount">
+          <span class="icon" aria-hidden="true">💰</span>
+          <h3>Simple Interest</h3>
+          <p>Interest & total amount</p>
+        </a>
+        <a class="card" href="compoundinterest.html" data-name="compound interest investment growth over time">
+          <span class="icon" aria-hidden="true">📈</span>
+          <h3>Compound Interest</h3>
+          <p>Investment growth over time</p>
+        </a>
+        <a class="card" href="investment.html" data-name="investment investment returns estimate">
+          <span class="icon" aria-hidden="true">💹</span>
+          <h3>Investment</h3>
+          <p>Investment returns estimate</p>
+        </a>
+        <a class="card" href="gst.html" data-name="gst calculator add, remove & split gst">
+          <span class="icon" aria-hidden="true">🧾</span>
+          <h3>GST Calculator</h3>
+          <p>Add, remove & split GST</p>
+        </a>
+        <a class="card" href="profitloss.html" data-name="profit & loss calculate profit or loss">
+          <span class="icon" aria-hidden="true">📊</span>
+          <h3>Profit & Loss</h3>
+          <p>Calculate profit or loss</p>
+        </a>
+        <a class="card" href="fuel.html" data-name="fuel cost fuel usage & travel cost">
+          <span class="icon" aria-hidden="true">⛽</span>
+          <h3>Fuel Cost</h3>
+          <p>Fuel usage & travel cost</p>
+        </a>
+        </div>
+      </section>
+      <section class="category" data-cat="Health">
+        <h2>Health</h2>
+        <div class="calculator-cards">
+        <a class="card" href="bmi.html" data-name="bmi calculator body mass index tracking">
+          <span class="icon" aria-hidden="true">⚖️</span>
+          <h3>BMI Calculator</h3>
+          <p>Body mass index tracking</p>
+        </a>
+        <a class="card" href="bmr.html" data-name="bmr calculator basal metabolic rate">
+          <span class="icon" aria-hidden="true">🔥</span>
+          <h3>BMR Calculator</h3>
+          <p>Basal metabolic rate</p>
+        </a>
+        <a class="card" href="calorie.html" data-name="calorie needs daily calorie requirement">
+          <span class="icon" aria-hidden="true">🍎</span>
+          <h3>Calorie Needs</h3>
+          <p>Daily calorie requirement</p>
+        </a>
+        <a class="card" href="bodyfat.html" data-name="body fat body fat percentage">
+          <span class="icon" aria-hidden="true">💪</span>
+          <h3>Body Fat</h3>
+          <p>Body fat percentage</p>
+        </a>
+        <a class="card" href="water.html" data-name="water intake daily water recommendation">
+          <span class="icon" aria-hidden="true">💧</span>
+          <h3>Water Intake</h3>
+          <p>Daily water recommendation</p>
+        </a>
+        </div>
+      </section>
+      <section class="category" data-cat="Math & Study">
+        <h2>Math & Study</h2>
+        <div class="calculator-cards">
+        <a class="card" href="cgpa.html" data-name="cgpa calculator grade & gpa calculation">
+          <span class="icon" aria-hidden="true">🎓</span>
+          <h3>CGPA Calculator</h3>
+          <p>Grade & GPA calculation</p>
+        </a>
+        <a class="card" href="attendance.html" data-name="attendance track your class attendance">
+          <span class="icon" aria-hidden="true">📋</span>
+          <h3>Attendance</h3>
+          <p>Track your class attendance</p>
+        </a>
+        <a class="card" href="hcf_lcm.html" data-name="hcf & lcm find hcf and lcm of numbers">
+          <span class="icon" aria-hidden="true">🔗</span>
+          <h3>HCF & LCM</h3>
+          <p>Find HCF and LCM of numbers</p>
+        </a>
+        <a class="card" href="prime.html" data-name="prime & factors check primes and find factors">
+          <span class="icon" aria-hidden="true">🔢</span>
+          <h3>Prime & Factors</h3>
+          <p>Check primes and find factors</p>
+        </a>
+        <a class="card" href="geometry.html" data-name="geometry area, perimeter, surface area, volume">
+          <span class="icon" aria-hidden="true">📐</span>
+          <h3>Geometry</h3>
+          <p>Area, perimeter, surface area, volume</p>
+        </a>
+        <a class="card" href="triangle.html" data-name="triangle area, perimeter and triangle type">
+          <span class="icon" aria-hidden="true">△</span>
+          <h3>Triangle</h3>
+          <p>Area, perimeter and triangle type</p>
+        </a>
+        <a class="card" href="statistics.html" data-name="statistics mean, median, mode and more">
+          <span class="icon" aria-hidden="true">📉</span>
+          <h3>Statistics</h3>
+          <p>Mean, median, mode and more</p>
+        </a>
+        <a class="card" href="number.html" data-name="number system binary • octal • decimal • hex">
+          <span class="icon" aria-hidden="true">🔟</span>
+          <h3>Number System</h3>
+          <p>Binary • Octal • Decimal • Hex</p>
+        </a>
+        <a class="card" href="binary.html" data-name="binary calculator calculate with binary numbers">
+          <span class="icon" aria-hidden="true">💾</span>
+          <h3>Binary Calculator</h3>
+          <p>Calculate with binary numbers</p>
+        </a>
+        </div>
+      </section>
+      <p class="empty-state" id="empty">No calculators match your search.</p>
+    </main>
+
+    
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

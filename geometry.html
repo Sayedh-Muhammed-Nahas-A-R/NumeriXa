@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Geometry Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #ccc;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>📐 Geometry Calculator</h2>
+
+            <select id="category" onchange="changeCategory()">
+                <option value="2d">2D Shapes</option>
+                <option value="3d">3D Shapes</option>
+            </select>
+
+            <select id="shape" onchange="showInputs()">
+                <option value="rectangle">Rectangle</option>
+                <option value="square">Square</option>
+                <option value="circle">Circle</option>
+                <option value="triangle">Triangle</option>
+            </select>
+
+            <div id="inputs"></div>
+
+            <button onclick="calculate()">
+                Calculate
+            </button>
+
+            <button onclick="resetCalculator()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function changeCategory() {
+
+            const category =
+                document.getElementById("category").value;
+
+            const shape =
+                document.getElementById("shape");
+
+            shape.innerHTML = "";
+
+            if (category === "2d") {
+
+                shape.innerHTML = `
+                    <option value="rectangle">Rectangle</option>
+                    <option value="square">Square</option>
+                    <option value="circle">Circle</option>
+                    <option value="triangle">Triangle</option>
+                `;
+
+            } else {
+
+                shape.innerHTML = `
+                    <option value="cube">Cube</option>
+                    <option value="cuboid">Cuboid</option>
+                    <option value="cylinder">Cylinder</option>
+                    <option value="sphere">Sphere</option>
+                `;
+            }
+
+            showInputs();
+        }
+
+        function showInputs() {
+
+            const shape =
+                document.getElementById("shape").value;
+
+            const inputs =
+                document.getElementById("inputs");
+
+            if (shape === "rectangle") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="length"
+                        placeholder="Length"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="width"
+                        placeholder="Width"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "square") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="side"
+                        placeholder="Side"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "circle") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="radius"
+                        placeholder="Radius"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "triangle") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="base"
+                        placeholder="Base"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="height"
+                        placeholder="Height"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="side1"
+                        placeholder="Side 1"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="side2"
+                        placeholder="Side 2"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="side3"
+                        placeholder="Side 3"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "cube") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="side"
+                        placeholder="Side"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "cuboid") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="length"
+                        placeholder="Length"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="width"
+                        placeholder="Width"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="height"
+                        placeholder="Height"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "cylinder") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="radius"
+                        placeholder="Radius"
+                        min="0"
+                        step="any"
+                    >
+
+                    <input
+                        type="number"
+                        id="height"
+                        placeholder="Height"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            else if (shape === "sphere") {
+
+                inputs.innerHTML = `
+                    <input
+                        type="number"
+                        id="radius"
+                        placeholder="Radius"
+                        min="0"
+                        step="any"
+                    >
+                `;
+
+            }
+
+            document.getElementById("result").innerHTML = "";
+        }
+
+        function getValue(id) {
+
+            return parseFloat(
+                document.getElementById(id).value
+            );
+        }
+
+        function valid(...values) {
+
+            return values.every(
+                value => !isNaN(value) && value > 0
+            );
+        }
+
+        function calculate() {
+
+            const shape =
+                document.getElementById("shape").value;
+
+            const result =
+                document.getElementById("result");
+
+            if (shape === "rectangle") {
+
+                const length = getValue("length");
+                const width = getValue("width");
+
+                if (!valid(length, width)) {
+                    showError();
+                    return;
+                }
+
+                const area = length * width;
+                const perimeter = 2 * (length + width);
+
+                showResult(
+                    "Rectangle",
+                    `Area: ${area.toFixed(2)}`,
+                    `Perimeter: ${perimeter.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "square") {
+
+                const side = getValue("side");
+
+                if (!valid(side)) {
+                    showError();
+                    return;
+                }
+
+                const area = side * side;
+                const perimeter = 4 * side;
+
+                showResult(
+                    "Square",
+                    `Area: ${area.toFixed(2)}`,
+                    `Perimeter: ${perimeter.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "circle") {
+
+                const radius = getValue("radius");
+
+                if (!valid(radius)) {
+                    showError();
+                    return;
+                }
+
+                const area = Math.PI * radius * radius;
+                const circumference = 2 * Math.PI * radius;
+
+                showResult(
+                    "Circle",
+                    `Area: ${area.toFixed(2)}`,
+                    `Circumference: ${circumference.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "triangle") {
+
+                const base = getValue("base");
+                const height = getValue("height");
+                const side1 = getValue("side1");
+                const side2 = getValue("side2");
+                const side3 = getValue("side3");
+
+                if (!valid(base, height, side1, side2, side3)) {
+                    showError();
+                    return;
+                }
+
+                const area = 0.5 * base * height;
+                const perimeter = side1 + side2 + side3;
+
+                showResult(
+                    "Triangle",
+                    `Area: ${area.toFixed(2)}`,
+                    `Perimeter: ${perimeter.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "cube") {
+
+                const side = getValue("side");
+
+                if (!valid(side)) {
+                    showError();
+                    return;
+                }
+
+                const volume = side ** 3;
+                const surfaceArea = 6 * side * side;
+
+                showResult(
+                    "Cube",
+                    `Volume: ${volume.toFixed(2)}`,
+                    `Surface Area: ${surfaceArea.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "cuboid") {
+
+                const length = getValue("length");
+                const width = getValue("width");
+                const height = getValue("height");
+
+                if (!valid(length, width, height)) {
+                    showError();
+                    return;
+                }
+
+                const volume = length * width * height;
+                const surfaceArea =
+                    2 * (
+                        length * width +
+                        width * height +
+                        length * height
+                    );
+
+                showResult(
+                    "Cuboid",
+                    `Volume: ${volume.toFixed(2)}`,
+                    `Surface Area: ${surfaceArea.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "cylinder") {
+
+                const radius = getValue("radius");
+                const height = getValue("height");
+
+                if (!valid(radius, height)) {
+                    showError();
+                    return;
+                }
+
+                const volume =
+                    Math.PI * radius * radius * height;
+
+                const surfaceArea =
+                    2 * Math.PI * radius * (radius + height);
+
+                showResult(
+                    "Cylinder",
+                    `Volume: ${volume.toFixed(2)}`,
+                    `Surface Area: ${surfaceArea.toFixed(2)}`
+                );
+            }
+
+            else if (shape === "sphere") {
+
+                const radius = getValue("radius");
+
+                if (!valid(radius)) {
+                    showError();
+                    return;
+                }
+
+                const volume =
+                    (4 / 3) * Math.PI * radius ** 3;
+
+                const surfaceArea =
+                    4 * Math.PI * radius * radius;
+
+                showResult(
+                    "Sphere",
+                    `Volume: ${volume.toFixed(2)}`,
+                    `Surface Area: ${surfaceArea.toFixed(2)}`
+                );
+            }
+        }
+
+        function showResult(title, first, second) {
+
+            document.getElementById("result").innerHTML = `
+
+                <div class="result-title">
+                    📐 ${title} Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        ${first.split(":")[0]}:
+                    </span>
+
+                    <span class="result-value">
+                        ${first.split(":").slice(1).join(":")}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        ${second.split(":")[0]}:
+                    </span>
+
+                    <span class="result-value">
+                        ${second.split(":").slice(1).join(":")}
+                    </span>
+                </div>
+
+                <div class="note">
+                    Results are calculated using standard geometry formulas.
+                </div>
+
+            `;
+        }
+
+        function showError() {
+
+            document.getElementById("result").innerHTML = `
+                <div class="result-title">
+                    Please enter valid positive values.
+                </div>
+            `;
+        }
+
+        function resetCalculator() {
+
+            document.getElementById("category").value = "2d";
+
+            document.getElementById("shape").innerHTML = `
+                <option value="rectangle">Rectangle</option>
+                <option value="square">Square</option>
+                <option value="circle">Circle</option>
+                <option value="triangle">Triangle</option>
+            `;
+
+            showInputs();
+
+            document.getElementById("result").innerHTML = "";
+        }
+
+        showInputs();
+
+    </script>
+
+</body>
+
+</html>

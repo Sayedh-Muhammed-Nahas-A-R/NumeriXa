@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07141b">
+<title>NumeriXa – Conversion Hub</title>
+
+<style>
+        body {
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 18px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: .3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,.35);
+        }
+
+        .card:hover{
+            transform: translateY(-5px);
+            box-shadow:0 10px 25px rgba(0,255,213,.35);
+        }
+
+        .icon{
+            font-size:3rem;
+            margin-bottom:10px;
+        }
+
+        .card h3{
+            color:#00ffd5;
+            margin-bottom:6px;
+            font-size:1.15rem;
+        }
+
+        .card p{
+            color:#d7d7d7;
+            font-size:.9rem;
+        }
+
+        @media(max-width:768px){
+            .cards{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+
+        @media(max-width:420px){
+            .cards{
+                grid-template-columns:repeat(2,1fr);
+                gap:14px;
+            }
+
+            .card{
+                padding:18px 12px;
+            }
+
+            .icon{
+                font-size:2.4rem;
+            }
+
+            .card h3{
+                font-size:1rem;
+            }
+
+            .card p{
+                font-size:.8rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="dashboard-heading">NumeriXa</h1>
+
+    <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+
+    <div class="cards">
+
+        <a class="card" href="length.html">
+            <div class="icon">📏</div>
+            <h3>Length</h3>
+            <p>Meter • KM • Inch</p>
+        </a>
+
+        <a class="card" href="weight.html">
+            <div class="icon">⚖️</div>
+            <h3>Weight</h3>
+            <p>KG • Gram • Pound</p>
+        </a>
+
+        <a class="card" href="temperature.html">
+            <div class="icon">🌡️</div>
+            <h3>Temperature</h3>
+            <p>°C • °F • Kelvin</p>
+        </a>
+
+        <a class="card" href="speed.html">
+            <div class="icon">🚗</div>
+            <h3>Speed</h3>
+            <p>km/h • mph • m/s</p>
+        </a>
+
+        <a class="card" href="timeunit.html">
+            <div class="icon">⏰</div>
+            <h3>Time</h3>
+            <p>Sec • Min • Hour</p>
+        </a>
+
+        <a class="card" href="volume.html">
+            <div class="icon">🥛</div>
+            <h3>Volume</h3>
+            <p>Liter • mL</p>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

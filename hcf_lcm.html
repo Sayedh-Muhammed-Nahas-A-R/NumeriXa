@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – HCF & LCM Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #ccc;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>🧮 HCF & LCM Calculator</h2>
+
+            <input
+                type="number"
+                id="number1"
+                placeholder="Enter Number 1"
+                min="1"
+            >
+
+            <input
+                type="number"
+                id="number2"
+                placeholder="Enter Number 2"
+                min="1"
+            >
+
+            <input
+                type="number"
+                id="number3"
+                placeholder="Enter Number 3 (Optional)"
+                min="1"
+            >
+
+            <button onclick="calculateHCFLCM()">
+                Calculate
+            </button>
+
+            <button onclick="resetCalculator()">
+                Reset
+            </button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function findHCF(a, b) {
+
+            a = Math.abs(a);
+            b = Math.abs(b);
+
+            while (b !== 0) {
+
+                let remainder = a % b;
+
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        function findLCM(a, b) {
+
+            return Math.abs(a * b) / findHCF(a, b);
+        }
+
+        function calculateHCFLCM() {
+
+            const value1 =
+                document.getElementById("number1").value;
+
+            const value2 =
+                document.getElementById("number2").value;
+
+            const value3 =
+                document.getElementById("number3").value;
+
+            if (value1 === "" || value2 === "") {
+
+                document.getElementById("result").innerHTML = `
+                    <div class="result-title">
+                        Please enter at least two numbers.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const numbers = [
+                parseInt(value1),
+                parseInt(value2)
+            ];
+
+            if (value3 !== "") {
+                numbers.push(parseInt(value3));
+            }
+
+            if (numbers.some(number => number <= 0 || isNaN(number))) {
+
+                document.getElementById("result").innerHTML = `
+                    <div class="result-title">
+                        Please enter positive whole numbers.
+                    </div>
+                `;
+
+                return;
+            }
+
+            let hcf = numbers[0];
+            let lcm = numbers[0];
+
+            for (let i = 1; i < numbers.length; i++) {
+
+                hcf = findHCF(hcf, numbers[i]);
+
+                lcm = findLCM(lcm, numbers[i]);
+
+            }
+
+            document.getElementById("result").innerHTML = `
+
+                <div class="result-title">
+                    🧮 HCF & LCM Result
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        Numbers:
+                    </span>
+
+                    <span class="result-value">
+                        ${numbers.join(", ")}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        HCF:
+                    </span>
+
+                    <span class="result-value">
+                        ${hcf}
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">
+                        LCM:
+                    </span>
+
+                    <span class="result-value">
+                        ${lcm}
+                    </span>
+                </div>
+
+                <div class="note">
+                    HCF = Highest Common Factor |
+                    LCM = Least Common Multiple
+                </div>
+
+            `;
+        }
+
+        function resetCalculator() {
+
+            document.getElementById("number1").value = "";
+            document.getElementById("number2").value = "";
+            document.getElementById("number3").value = "";
+
+            document.getElementById("result").innerHTML = "";
+        }
+
+    </script>
+
+</body>
+
+</html>

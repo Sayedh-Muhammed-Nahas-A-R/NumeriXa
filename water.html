@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NumeriXa – Water Intake Calculator</title>
+
+<style>
+        .calculator {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00ffd5;
+            color: black;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #00ffd5;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-label {
+            color: #ddd;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #00ffd5;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            color: #ccc;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .calculator {
+                max-width: 100%;
+                padding: 18px;
+            }
+
+            .dashboard-heading {
+                font-size: 2.2rem;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .result {
+                font-size: 1rem;
+            }
+        }
+    </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+
+<body>
+
+    <div>
+        <h1 class="dashboard-heading">NumeriXa</h1>
+
+        <a href="dashboard.html" class="back-btn">
+            Back to Dashboard
+        </a>
+
+        <div class="calculator">
+
+            <h2>💧 Water Intake Calculator</h2>
+
+            <input
+                type="number"
+                id="weight"
+                placeholder="Weight (kg)"
+                min="1"
+                step="0.1"
+            >
+
+            <select id="activity">
+                <option value="low">Low Activity</option>
+                <option value="moderate">Moderate Activity</option>
+                <option value="high">High Activity</option>
+            </select>
+
+            <select id="climate">
+                <option value="normal">Normal Climate</option>
+                <option value="hot">Hot Climate</option>
+            </select>
+
+            <button onclick="calculateWater()">Calculate</button>
+
+            <button onclick="resetWater()">Reset</button>
+
+            <div class="result" id="result"></div>
+
+        </div>
+    </div>
+
+    <script>
+
+        function calculateWater() {
+
+            const weight = parseFloat(
+                document.getElementById("weight").value
+            );
+
+            const activity =
+                document.getElementById("activity").value;
+
+            const climate =
+                document.getElementById("climate").value;
+
+            const result =
+                document.getElementById("result");
+
+            // Validate weight
+            if (!weight || weight <= 0) {
+
+                result.innerHTML =
+                    `<div class="result-title">Please enter a valid weight.</div>`;
+
+                return;
+            }
+
+            // Base water requirement
+            const base = weight * 0.033;
+
+            // Activity adjustment
+            let extra = 0;
+
+            if (activity === "low") {
+                extra = 0;
+            }
+
+            if (activity === "moderate") {
+                extra = 0.35;
+            }
+
+            if (activity === "high") {
+                extra = 0.70;
+            }
+
+            // Climate adjustment
+            if (climate === "hot") {
+                extra += 0.50;
+            }
+
+            // Total water
+            const total = base + extra;
+
+            // Approximate glasses
+            // 1 glass ≈ 250 ml = 0.25 L
+            const glasses = Math.ceil(total / 0.25);
+
+            result.innerHTML = `
+                <div class="result-title">
+                    💧 Daily Water Recommendation
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Daily Water:</span>
+                    <span class="result-value">
+                        ${total.toFixed(2)} L
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Approx. Glasses:</span>
+                    <span class="result-value">
+                        ${glasses} glasses
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Base Water:</span>
+                    <span class="result-value">
+                        ${base.toFixed(2)} L
+                    </span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Extra Requirement:</span>
+                    <span class="result-value">
+                        ${extra.toFixed(2)} L
+                    </span>
+                </div>
+
+                <div class="note">
+                    This is a simple estimate for general guidance,
+                    not a medical recommendation.
+                </div>
+            `;
+        }
+
+        function resetWater() {
+
+            document.getElementById("weight").value = "";
+
+            document.getElementById("activity").value = "low";
+
+            document.getElementById("climate").value = "normal";
+
+            document.getElementById("result").innerHTML = "";
+        }
+
+    </script>
+
+</body>
+
+</html>
